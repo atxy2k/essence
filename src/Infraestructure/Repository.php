@@ -1,31 +1,41 @@
 <?php namespace Atxy2k\Essence\Infraestructure;
+use Atxy2k\Essence\Interfaces\CriteriaInterface;
 use Atxy2k\Essence\Interfaces\RepositoryInterface;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-
+use BadMethodCallException;
+use Throwable;
 /**
  * Created by PhpStorm.
  * User: atxy2k
  * Date: 11/2/2019
  * Time: 13:39
  */
-class Repository implements RepositoryInterface
+class Repository implements RepositoryInterface, CriteriaInterface
 {
     /** @var string */
-    protected $name = null;
-    /** @var Model */
     protected $model = null;
+    /** @var Model */
+    protected $query = null;
     /** @var Container */
     protected $app = null;
+    /** @var array  */
+    protected $criteria = [];
+
+    public function __construct(Container $app)
+    {
+        $this->query = $app->make($this->model);
+        $this->app = $app;
+    }
 
     /**
      * @return int
      */
     public function count(): int
     {
-        return $this->model->count();
+        return $this->query->count();
     }
 
     /**
@@ -34,7 +44,7 @@ class Repository implements RepositoryInterface
      */
     public function create(array $data): ?Model
     {
-        return $this->model->create($data);
+        return $this->query->create($data);
     }
 
     /**
@@ -44,7 +54,7 @@ class Repository implements RepositoryInterface
      */
     public function update($id, array $attributes = []): bool
     {
-        return $this->model->findOrFail($id)->update($attributes);
+        return $this->query->findOrFail($id)->update($attributes);
     }
 
     /**
@@ -53,7 +63,7 @@ class Repository implements RepositoryInterface
      */
     public function all(array $columns = ['*']): Collection
     {
-        return $this->model->get($columns);
+        return $this->query->get($columns);
     }
 
     /**
@@ -63,7 +73,7 @@ class Repository implements RepositoryInterface
      */
     public function find($id, $columns = ['*']): ?Model
     {
-        return $this->model->find($id,$columns);
+        return $this->query->find($id,$columns);
     }
 
     /**
@@ -73,7 +83,7 @@ class Repository implements RepositoryInterface
      */
     public function findWithTrashed($id, $columns = ['*']): ?Model
     {
-        return $this->model->withTrashed()->find($id,$columns);
+        return $this->query->withTrashed()->find($id,$columns);
     }
 
     /**
@@ -83,7 +93,7 @@ class Repository implements RepositoryInterface
      */
     public function findOrFail($id, $columns = ['*']) : Model
     {
-        return $this->model->findOrFail($id,$columns);
+        return $this->query->findOrFail($id,$columns);
     }
 
     /**
@@ -93,7 +103,7 @@ class Repository implements RepositoryInterface
      */
     public function findOrFailWithTrashed($id, $columns = ['*']) : Model
     {
-        return $this->model->withTrashed()->findOrFail($id,$columns);
+        return $this->query->withTrashed()->findOrFail($id,$columns);
     }
 
     /**
@@ -102,7 +112,7 @@ class Repository implements RepositoryInterface
      */
     public function destroy($ids): int
     {
-        return $this->model->destroy($ids);
+        return $this->query->destroy($ids);
     }
 
     /**
@@ -111,7 +121,7 @@ class Repository implements RepositoryInterface
      */
     public function delete($id): bool
     {
-        return $this->model->findOrFail($id)->delete();
+        return $this->query->findOrFail($id)->delete();
     }
 
     /**
@@ -119,7 +129,7 @@ class Repository implements RepositoryInterface
      */
     public function model(): Model
     {
-        return $this->model;
+        return $this->query;
     }
 
     /**
@@ -128,7 +138,7 @@ class Repository implements RepositoryInterface
      */
     public function max(string $column): int
     {
-        return $this->model->max($column);
+        return $this->query->max($column);
     }
 
     /**
@@ -137,7 +147,7 @@ class Repository implements RepositoryInterface
      */
     public function min(string $column): int
     {
-        return $this->model->min($column);
+        return $this->query->min($column);
     }
 
     /**
@@ -147,7 +157,7 @@ class Repository implements RepositoryInterface
      */
     public function lists(string $col, string $key = null): array
     {
-        return $this->model->pluck($col,$key)->all();
+        return $this->query->pluck($col,$key)->all();
     }
 
     /**
@@ -167,7 +177,7 @@ class Repository implements RepositoryInterface
      */
     public function paginate(int $per_page, int $page = 1): LengthAwarePaginator
     {
-        return $this->model->paginate( $per_page, ['*'], null, $page );
+        return $this->query->paginate( $per_page, ['*'], null, $page );
     }
 
     /**
@@ -175,7 +185,7 @@ class Repository implements RepositoryInterface
      */
     public function first(): ?Model
     {
-        return $this->model->first();
+        return $this->query->first();
     }
 
     /**
@@ -183,6 +193,62 @@ class Repository implements RepositoryInterface
      */
     public function last(): ?Model
     {
-        return $this->model->last();
+        return $this->query->last();
+    }
+
+    /**
+     * Add a Criteria object to criteria to going to apply later.
+     * @param Criteria $criteria
+     * @return Repository
+     */
+    public function pushCriteria(Criteria $criteria): Repository
+    {
+        if(!in_array($criteria, $this->criteria))
+            $this->criteria[] = $criteria;
+        return $this;
+    }
+
+    /**
+     * Add a Criteria object to criteria to going to apply later.
+     * @param Criteria $criteria
+     * @return Repository
+     */
+    public function addCriteria(Criteria $criteria): Repository
+    {
+        return $this->pushCriteria($criteria);
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     * @throws Throwable
+     */
+    public function __call($name, $arguments)
+    {
+        if(ends_with($name, 'WithCriteria'))
+        {
+            $functionToCall = str_replace('WithCriteria', '', $name);
+            throw_unless(function_exists($functionToCall), BadMethodCallException::class);
+            $otherModel = $this->app->make($this->name);
+            /** @var Criteria $criteria */
+            foreach ( $this->getCriteria() as $criteria )
+            {
+                $this->query = $criteria->apply($otherModel, $this);
+            }
+            $response = call_user_func($functionToCall, $arguments);
+            $this->query = $otherModel;
+            return $response;
+        }
+        throw new BadMethodCallException;
+    }
+
+    /**
+     * Return all criteria added
+     * @return array
+     */
+    public function getCriteria(): array
+    {
+        return $this->criteria;
     }
 }

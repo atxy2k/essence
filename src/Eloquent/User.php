@@ -16,6 +16,11 @@ class User extends EloquentUser
     protected $dates    = [ 'last_login', 'created_at', 'updated_at' ];
     protected $appends  = [ 'full_name' ];
 
+    public function getIsAdminAttribute()
+    {
+        return $this->inRole( config('essence.admin_role_slug') );
+    }
+
     public function getFullNameAttribute() : string
     {
         return vsprintf('%s %s', [ $this->first_name, $this->last_name ]);
@@ -25,6 +30,11 @@ class User extends EloquentUser
     {
         $activation = Activation::completed($this);
         return !is_null($activation) && $activation!=false;
+    }
+
+    public function changeEmailRequests()
+    {
+        return $this->hasMany(ChangeEmailRequest::class);
     }
 
 }

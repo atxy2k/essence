@@ -13,11 +13,10 @@ class EssenceServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'atxy2k');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'atxy2k');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
-
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
