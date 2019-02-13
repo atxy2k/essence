@@ -14,6 +14,7 @@ use Atxy2k\Essence\Exceptions\Users\DeleteMyselfException;
 use Atxy2k\Essence\Exceptions\Users\DoesntHaveRolesException;
 use Atxy2k\Essence\Exceptions\Users\UserAlreadyActiveException;
 use Atxy2k\Essence\Exceptions\Users\UserAlreadyBeAdminException;
+use Atxy2k\Essence\Exceptions\Users\UserNotActiveException;
 use Atxy2k\Essence\Exceptions\Users\UserNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Validators\UsersValidator;
@@ -40,6 +41,11 @@ class UsersService extends Service
         $this->changeEmailRequestService = $changeEmailRequestService;
     }
 
+    /**
+     * Try login a user with email and password
+     * @param array $data
+     * @return bool
+     */
     public function login(array $data) : bool
     {
         $return = false;
@@ -69,6 +75,12 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Reset password of user
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
     public function resetPassword( int $id,array $data ) : bool
     {
         $return = false;
@@ -87,6 +99,12 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Change user password
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
     public function changePassword(int $id, array $data ) : bool
     {
         $return = false;
@@ -118,6 +136,12 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Change email availability
+     * @param string $email
+     * @param string|null $except
+     * @return bool
+     */
     public function checkEmailAvailability( string $email, string $except = null ) : bool
     {
         $return = true;
@@ -136,6 +160,12 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Create a request for change email
+     * @param int $user_id
+     * @param array $data
+     * @return bool
+     */
     public function requestEmailChanged(int $user_id, array $data ) : bool
     {
         $return = false;
@@ -178,6 +208,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Create a reminder, practically begin process to restart his password.
+     * @param string $email
+     * @return bool
+     */
     public function createReminder(string $email ) : bool
     {
         $return = false;
@@ -195,6 +230,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Check if until can change his password
+     * @param array $data
+     * @return bool
+     */
     public function reminderCanChangePassword(array $data) : bool
     {
         $return = false;
@@ -213,6 +253,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Update user password
+     * @param array $data
+     * @return bool
+     */
     public function updatePasswordForReminder(array $data) : bool
     {
         $return = false;
@@ -245,6 +290,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Force activate user
+     * @param int $id
+     * @return bool
+     */
     public function forceActivate(int $id ) : bool
     {
         $return = false;
@@ -254,6 +304,24 @@ class UsersService extends Service
             ( $activation = Activation::exists($user) ) || ( $activation = Activation::create($user) );
             $data_activation = [ 'email' => $user->email, 'code' => $activation->code ];
             $return = $this->activate($data_activation);
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+        }
+        return $return;
+    }
+
+    public function deactivateUser(int $user_id) : bool
+    {
+        $return = false;
+        try
+        {
+            $user = $this->usersRepository->find($user_id);
+            throw_if(is_null($user), UserNotFoundException::class);
+            throw_unless(Activation::exists($user), UserNotActiveException::class);
+            throw_unless(Activation::remove($user), new UnexpectedException());
+            $return = true;
         }
         catch (Throwable $e)
         {

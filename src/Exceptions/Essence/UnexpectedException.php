@@ -10,5 +10,5 @@ use Exception;
 
 class UnexpectedException extends Exception
 {
-    protected $message = 'Unknow error';
+    protected $message = 'Unknow error has ocurred';
 }

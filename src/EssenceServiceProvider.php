@@ -2,6 +2,7 @@
 
 namespace Atxy2k\Essence;
 
+use Illuminate\Container\Container;
 use Illuminate\Support\ServiceProvider;
 
 class EssenceServiceProvider extends ServiceProvider
@@ -33,8 +34,8 @@ class EssenceServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/essence.php', 'essence');
 
         // Register the service the package provides.
-        $this->app->singleton('essence', function ($app) {
-            return new Essence;
+        $this->app->singleton('essence', function (Container $app) {
+            return $app->make(Essence::class);
         });
     }
 

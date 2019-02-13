@@ -4,9 +4,9 @@
     "license": "license",
     "authors": [
         {
-            "name": "author name",
-            "email": "author email",
-            "homepage": "author homepage"
+            "name": "Ivan Alvarado",
+            "email": "ivan.alvarado@serprogramador.es",
+            "homepage": "https://serprogramador.es"
         }
     ],
     "homepage": "https://github.com/atxy2k/essence",
@@ -18,7 +18,7 @@
     "require-dev": {
         "phpunit/phpunit": "~7.0",
         "mockery/mockery": "^1.1",
-        "orchestra/testbench": "~3.0",
+        "orchestra/testbench": "~3.5",
         "sempro/phpunit-pretty-print": "^1.0"
     },
     "autoload": {
