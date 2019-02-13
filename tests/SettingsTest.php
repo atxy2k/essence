@@ -23,7 +23,7 @@ class SettingsTest extends TestCase
         $this->assertNull($setting);
     }
 
-    public function testInsertValueAndReturnObject()
+    public function testCreateValueAndReturnObject()
     {
         DB::beginTransaction();
         $settingsRepository = $this->app->make(SettingsRepository::class);
@@ -37,10 +37,11 @@ class SettingsTest extends TestCase
         $this->assertTrue(is_string($setting->value));
         $this->assertNotNull($setting->created_at);
         $this->assertNotNull($setting->updated_at);
+        $this->assertNull($setting->user_id);
         DB::rollBack();
     }
 
-    public function testInsertEncodedValueAndReturnObject()
+    public function testCreateEncodedValueAndReturnObjectWithArray()
     {
         DB::beginTransaction();
         $settingsRepository = $this->app->make(SettingsRepository::class);
@@ -66,6 +67,24 @@ class SettingsTest extends TestCase
         $this->assertEquals($data['last_name'], 'Alvarado');
         DB::rollBack();
     }
+
+//    public function testCreateCustomUserConfig()
+//    {
+//        DB::beginTransaction();
+//        $key = 'system_layout';
+//        $user_id = 1;
+//        $settingsRepository = $this->app->make(SettingsRepository::class);
+//        /** @var Setting $setting */
+//        $setting = $settingsRepository->setValue($key, 'metronic',$user_id);
+//        $this->assertNotNull($setting);
+//        $this->assertInstanceOf(Setting::class, $setting);
+//        $this->assertEquals($setting->key, 'system_layout');
+//        $this->assertFalse($setting->encode);
+//        $this->assertEquals($setting->value, 'metronic');
+//        $this->assertTrue(is_string($setting->value));
+//        $this->assertNotNull($setting->created_at);
+//        $this->assertNotNull($setting->updated_at);
+//    }
 
     public function testFindValueAfterSavedIt()
     {
@@ -94,14 +113,11 @@ class SettingsTest extends TestCase
             'first_name' => 'ivan'
         ]);
         $this->assertNotNull($setting);
-
         $findIt = $settingsRepository->getValue($key);
         $this->assertNotNull($findIt);
         $this->assertTrue(is_array($findIt));
         $this->assertEquals($findIt, [ 'id' => 1, 'first_name' => 'ivan' ]);
         DB::rollBack();
     }
-
-    //TODO test distinct values if user is connected
 
 }

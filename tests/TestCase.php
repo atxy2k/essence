@@ -1,12 +1,14 @@
 <?php namespace Atxy2k\Essence\Tests;
-use Atxy2k\Essence\EssenceServiceProvider;
-use Orchestra\Testbench\TestCase as OrchestraTest;
 /**
  * Created by PhpStorm.
  * User: atxy2k
  * Date: 12/2/2019
  * Time: 19:52
  */
+use Atxy2k\Essence\EssenceServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTest;
+use Cartalyst\Sentinel\Native\Facades\Sentinel;
+
 class TestCase extends OrchestraTest
 {
 
@@ -15,12 +17,13 @@ class TestCase extends OrchestraTest
 //        return [EssenceServiceProvider::class];
 //    }
 //
-//    protected function getPackageAliases($app)
-//    {
-//        return [
-//            'Essence' => Essence::class
-//        ];
-//    }
+    protected function getPackageAliases($app)
+    {
+        return [
+            'Essence' => Essence::class,
+            'Sentinel' => Sentinel::class
+        ];
+    }
 
     protected function getEnvironmentSetUp($app)
     {
@@ -34,6 +37,7 @@ class TestCase extends OrchestraTest
             'password'  => 'secret',
             'port'      => '33060',
         ]);
+        $app['config']->set('essence.admin_role_slug', 'developer');
     }
 
 }

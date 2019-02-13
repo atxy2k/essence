@@ -112,12 +112,11 @@ class RolesService extends Service
     }
 
     /**
-     * Check name availability, you can know before send the data to create a new role, if it could be saved it.
-     * @param bool $name
+     * @param string $name
      * @param int|null $except
      * @return bool
      */
-    public function checkNameAvailability( $name = false, int $except = null ) : bool
+    public function checkNameAvailability( string $name, int $except = null ) : bool
     {
         $return = true;
         try

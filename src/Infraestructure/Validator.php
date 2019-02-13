@@ -17,7 +17,7 @@ class Validator implements ValidatorInterface
     ];
     /** @var array  */
     protected $ignore = [];
-    /** @var MessageBag  */
+    /** @var MessageBag|null  */
     protected $errors = null;
     /** @var array  */
     protected $data = [];
@@ -113,4 +113,5 @@ class Validator implements ValidatorInterface
     {
         return $this->errors;
     }
+
 }

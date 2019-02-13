@@ -12,7 +12,7 @@ Trait SluggableTrait
 {
     public function findBySlug( $slug, $id = null ) : Model
     {
-        return !is_null($id) ? $this->model->where('slug', $slug)->where('id','!=', $id)->first() : $this->model->where('slug', $slug)->first();
+        return !is_null($id) ? $this->query->where('slug', $slug)->where('id','!=', $id)->first() : $this->query->where('slug', $slug)->first();
     }
 
     public function slugIsAvailable( $slug, $id = null ) : bool

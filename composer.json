@@ -40,5 +40,8 @@
                 "Essence": "Atxy2k\\Essence\\Facades\\Essence"
             }
         }
+    },
+    "scripts": {
+        "test": "vendor\\bin\\phpunit"
     }
 }

@@ -12,12 +12,12 @@ class RolesValidator extends Validator
     protected $rules =
     [
         'create' => [
-            'name'      => 'required|string',
-            'routes'    => 'required|array'
+            'name'      => 'required|string|bail',
+            'routes'    => 'required|array|bail'
         ],
         'update' => [
-            'name'      => 'required|string',
-            'routes'    => 'required|array'
+            'name'      => 'required|string|bail',
+            'routes'    => 'required|array|bail'
         ],
     ];
 }
