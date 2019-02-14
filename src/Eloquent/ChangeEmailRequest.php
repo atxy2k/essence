@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ChangeEmailRequest extends Model
 {
     use SoftDeletes;
-    protected $table = 'change_email_request';
+
+    protected $table = 'change_email_requests';
     protected $fillable = ['user_id', 'token_confirmation_change', 'token_confirmation_email', 'before_email', 'next_email', 'confirmated', 'email_confirmed' ];
     protected $guarded = ['id'];
     protected $dates = ['created_at', 'updated_at'];

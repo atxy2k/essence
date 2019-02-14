@@ -6,7 +6,7 @@
  * Time: 11:25
  */
 use Cartalyst\Sentinel\Users\EloquentUser;
-use Activation;
+use Sentinel;
 
 class User extends EloquentUser
 {
@@ -28,7 +28,7 @@ class User extends EloquentUser
 
     public function getIsActivatedAttribute() : bool
     {
-        $activation = Activation::completed($this);
+        $activation = Sentinel::getActivationRepository()->completed($this);
         return !is_null($activation) && $activation!=false;
     }
 

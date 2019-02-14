@@ -5,7 +5,12 @@
  * Date: 12/2/2019
  * Time: 19:52
  */
-use Atxy2k\Essence\EssenceServiceProvider;
+
+use Atxy2k\Essence\Eloquent\User;
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
+use Cartalyst\Sentinel\Laravel\Facades\Reminder;
+use Cartalyst\Sentinel\Reminders\EloquentReminder;
+use Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use Orchestra\Testbench\TestCase as OrchestraTest;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
 
@@ -21,6 +26,8 @@ class TestCase extends OrchestraTest
     {
         return [
             'Essence' => Essence::class,
+            'Activation' => Activation::class,
+            'Reminder'   => Reminder::class,
             'Sentinel' => Sentinel::class
         ];
     }
@@ -38,6 +45,8 @@ class TestCase extends OrchestraTest
             'port'      => '33060',
         ]);
         $app['config']->set('essence.admin_role_slug', 'developer');
+        $app['config']->set('sentinel.users.model', User::class);
+        $app['config']->set('config.key', 'base64:+74b9J7uq7IWsUt5D8ij+dwA1nV3+I48P1WkN4tleHw=');
     }
 
 }

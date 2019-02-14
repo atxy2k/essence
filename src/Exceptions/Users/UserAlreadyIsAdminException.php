@@ -8,7 +8,7 @@
 
 use Exception;
 
-class UserAlreadyBeAdminException extends Exception
+class UserAlreadyIsAdminException extends Exception
 {
     protected $message = 'El usuario ya es administrador';
 }

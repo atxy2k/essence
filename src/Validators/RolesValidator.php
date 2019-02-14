@@ -13,11 +13,11 @@ class RolesValidator extends Validator
     [
         'create' => [
             'name'      => 'required|string|bail',
-            'routes'    => 'required|array|bail'
+            'routes'    => 'nullable|array|bail'
         ],
         'update' => [
             'name'      => 'required|string|bail',
-            'routes'    => 'required|array|bail'
+            'routes'    => 'nullable|array|bail'
         ],
     ];
 }

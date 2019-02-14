@@ -87,7 +87,7 @@ class RolesService extends Service
             {
                 DB::beginTransaction();
                 $permissions = [];
-                foreach ( $data['routes'] as $route => $val )
+                foreach ( array_get($data,'routes', []) as $route => $val )
                 {
                     $permissions[ $route ] = boolval( intval($val) );
                 }
@@ -99,7 +99,7 @@ class RolesService extends Service
                 throw_if(is_null($role), RoleNotCreatedException::class);
                 $users = array_get($data,'users',[]);
                 $role->users()->sync($users);
-                $return = $role;
+                $return = $this->rolesRepository->find($role->id);
                 \DB::commit();
             }
             catch (Throwable $e)

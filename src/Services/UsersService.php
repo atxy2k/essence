@@ -5,6 +5,8 @@
  * Date: 11/2/2019
  * Time: 18:04
  */
+
+use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Exceptions\EmailRequests\IdenticalEmailsException;
 use Atxy2k\Essence\Exceptions\EmailRequests\InvalidTokenException;
 use Atxy2k\Essence\Exceptions\Essence\InvalidParamsException;
@@ -12,18 +14,23 @@ use Atxy2k\Essence\Exceptions\Essence\UnexpectedException;
 use Atxy2k\Essence\Exceptions\Roles\AdminRoleNotFound;
 use Atxy2k\Essence\Exceptions\Users\DeleteMyselfException;
 use Atxy2k\Essence\Exceptions\Users\DoesntHaveRolesException;
+use Atxy2k\Essence\Exceptions\Users\IncorrectPasswordException;
 use Atxy2k\Essence\Exceptions\Users\UserAlreadyActiveException;
-use Atxy2k\Essence\Exceptions\Users\UserAlreadyBeAdminException;
+use Atxy2k\Essence\Exceptions\Users\UserAlreadyIsAdminException;
+use Atxy2k\Essence\Exceptions\Users\UserDoesNotAdminException;
 use Atxy2k\Essence\Exceptions\Users\UserNotActiveException;
+use Atxy2k\Essence\Exceptions\Users\UserNotCreatedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotFoundException;
+use Atxy2k\Essence\Exceptions\Users\UserNotUpdatedException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Validators\UsersValidator;
 use Atxy2k\Essence\Repositories\UsersRepository;
+use Cartalyst\Sentinel\Users\EloquentUser;
 use Sentinel;
 use Throwable;
 use Reminder;
-use Activation;
 use Illuminate\Validation\Rule;
+use DB;
 
 class UsersService extends Service
 {
@@ -42,7 +49,53 @@ class UsersService extends Service
     }
 
     /**
-     * Try login a user with email and password
+     * Register a new user
+     * Tested
+     * @param array $data
+     * @return User|null
+     * @throws Throwable
+     */
+    public function register(array $data) : ?User
+    {
+        $return = null;
+        if ( $this->validator->with($data)->passes('register') )
+        {
+            try
+            {
+                DB::beginTransaction();
+                $activated      = boolval( array_get($data, 'activate', false) );
+                $asign_password = boolval( array_get($data, 'asign_password', false) );
+                if ( !$asign_password )
+                {
+                    $data['password'] = strtolower(str_random(6));
+                }
+                $credentials = array_only($data,['email', 'password','first_name','last_name']);
+                $user = $activated ? Sentinel::registerAndActivate($credentials) : Sentinel::register($credentials);
+                throw_if(is_null($user), UserNotCreatedException::class);
+                $user->roles()->sync(array_get($data, 'roles', []));
+                //$user->notify( !$asign_password ? new Welcome( $data['password'] ) : new Welcome() ) ;
+                if ( !$activated )
+                {
+                    $activation = Sentinel::getActivationRepository()->create($user);
+                    //$activation_code = encrypt( sprintf('%s_____%s', $user->email, $activation->code) );
+                    //$user->notify( new ActivationRequired( $activation_code ) );
+                }
+                /** @var User $return */
+                $return = $this->usersRepository->find($user->id);
+                DB::commit();
+            }
+            catch (\Exception $e)
+            {
+                $this->putError($e->getMessage());
+                DB::rollBack();
+            }
+        }
+        return $return;
+    }
+
+    /**
+     * Try login a user with email and password.
+     * //TODO test please, something happend when I try to test, Sentinel::stateless return false
      * @param array $data
      * @return bool
      */
@@ -58,18 +111,16 @@ class UsersService extends Service
                 throw_if( is_null(Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email']))), UserNotFoundException::class );
                 $_user = Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email']));
                 throw_if($_user->roles->count() === 0, DoesntHaveRolesException::class);
-                if ( $user = Sentinel::stateless($credentials) )
-                {
-                    Sentinel::authenticate($data, $remember);
-                    $return = true;
-                }
+                throw_unless(Sentinel::stateless($credentials), IncorrectPasswordException::class);
+                if($remember)
+                    Sentinel::authenticateAndRemember($data);
                 else
-                {
-                    $this->errors->add('error', __('Contraseña incorrecta'));
-                }
+                    Sentinel::authenticate($data);
+                $return = true;
             }
-            catch (Throwable $e) {
-                $this->errors->add('error', $e->getMessage());
+            catch (Throwable $e)
+            {
+                $this->pushError($e->getMessage());
             }
         }
         return $return;
@@ -101,6 +152,7 @@ class UsersService extends Service
 
     /**
      * Change user password
+     * //TODO test, Sentinel::stateless doesn't work me last time
      * @param int $id
      * @param array $data
      * @return bool
@@ -147,11 +199,11 @@ class UsersService extends Service
         $return = true;
         if ( !is_null($except) )
         {
-            $user = $this->usersRepository->query()->where('email', $email)->where('id', '!=', $except)->first();
+            $user = $this->usersRepository->model()->where('email', $email)->where('id', '!=', $except)->first();
         }
         else
         {
-            $user = $this->usersRepository->query()->where('email', $email)->first();
+            $user = $this->usersRepository->model()->where('email', $email)->first();
         }
         if ( !is_null($user) )
         {
@@ -169,7 +221,7 @@ class UsersService extends Service
     public function requestEmailChanged(int $user_id, array $data ) : bool
     {
         $return = false;
-        $user = Sentinel::getUserRepository()->findById($user_id);
+        $user = $this->usersRepository->find($user_id);
         try {
             throw_if(is_null($user), UserNotFoundException::class);
             if ( $this->validator->with($data)->passes('changeEmail') )
@@ -209,6 +261,7 @@ class UsersService extends Service
     }
 
     /**
+     * //TODO check this function, we have a problem with sentinel's environment in unit tests.
      * Create a reminder, practically begin process to restart his password.
      * @param string $email
      * @return bool
@@ -231,6 +284,7 @@ class UsersService extends Service
     }
 
     /**
+     * //TODO check tests for this function, depends of above function.
      * Check if until can change his password
      * @param array $data
      * @return bool
@@ -254,6 +308,7 @@ class UsersService extends Service
     }
 
     /**
+     * //TODO check unit tests for this function, it is depend of above function
      * Update user password
      * @param array $data
      * @return bool
@@ -301,7 +356,7 @@ class UsersService extends Service
         $user = Sentinel::getUserRepository()->findById($id);
         try
         {
-            ( $activation = Activation::exists($user) ) || ( $activation = Activation::create($user) );
+            ( $activation = Sentinel::getActivationRepository()->exists($user) ) || ( $activation = Sentinel::getActivationRepository()->create($user) );
             $data_activation = [ 'email' => $user->email, 'code' => $activation->code ];
             $return = $this->activate($data_activation);
         }
@@ -312,6 +367,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Deactivate user
+     * @param int $user_id
+     * @return bool
+     */
     public function deactivateUser(int $user_id) : bool
     {
         $return = false;
@@ -319,8 +379,8 @@ class UsersService extends Service
         {
             $user = $this->usersRepository->find($user_id);
             throw_if(is_null($user), UserNotFoundException::class);
-            throw_unless(Activation::exists($user), UserNotActiveException::class);
-            throw_unless(Activation::remove($user), new UnexpectedException());
+            throw_unless($user->is_activated, UserNotActiveException::class);
+            throw_unless(Sentinel::getActivationRepository()->remove($user), new UnexpectedException());
             $return = true;
         }
         catch (Throwable $e)
@@ -330,6 +390,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Activate user
+     * @param array $data
+     * @return bool
+     */
     public function activate(array $data) : bool
     {
         $return = false;
@@ -341,7 +406,7 @@ class UsersService extends Service
                 $user = Sentinel::getUserRepository()->findByCredentials($credentials);
                 throw_if(is_null($user), UserNotFoundException::class);
                 throw_if($user->is_activated, UserAlreadyActiveException::class);
-                throw_unless(Activation::complete($user, $data['code']),
+                throw_unless(Sentinel::getActivationRepository()->complete($user, $data['code']),
                     new UnexpectedException('No se pudo completar la activación del usuario. Contacte al administrador.'));
                 $return = true;
             }
@@ -353,22 +418,38 @@ class UsersService extends Service
         return $return;
     }
 
-    public function update(int $id, array $data) : bool
+    /**
+     * Update user's data
+     * @param int $id
+     * @param array $data
+     * @return User|null
+     */
+    public function update(int $id, array $data) : ?User
     {
-        $return = false;
+        $return = null;
         $user = Sentinel::getUserRepository()->findById($id);
-        if ( !is_null($user) )
+        try
         {
+            throw_if(is_null($user), UserNotFoundException::class);
             $this->validator->add('update', 'email',  Rule::unique('users')->ignore( $user->id ));
             if ( $this->validator->with( $data )->passes('update') )
             {
-                $user->update( array_only($data,[ 'first_name', 'last_name', 'email']) );
-                $return = true;
+                $updated_data = array_only($data,[ 'first_name', 'last_name', 'email']);
+                throw_unless( $this->usersRepository->update($id, $updated_data ), UserNotUpdatedException::class );
+                $return = $this->usersRepository->find($id);
             }
+        } catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
         }
         return $return;
     }
 
+    /**
+     * Delete user
+     * @param int $id
+     * @return bool
+     */
     public function delete(int $id) : bool
     {
         $return = false;
@@ -376,7 +457,8 @@ class UsersService extends Service
         try {
             throw_if(is_null($user), UserNotFoundException::class);
             $current_user = Sentinel::getUser();
-            throw_if( $user->id != $current_user->id, DeleteMyselfException::class);
+            if(!is_null($current_user))
+                throw_if( $user->id != $current_user->id, DeleteMyselfException::class);
             $return = $this->usersRepository->delete($user->id);
         } catch (Throwable $e)
         {
@@ -385,13 +467,20 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Remove admin role for one user, one role is almost required.
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
     public function changeAdminRole( int $id, array $data ) : bool
     {
         $return = false;
-        $user = Sentinel::getUserRepository()->findById($id);
+        $user = $this->usersRepository->find($id);
         try
         {
             throw_if(is_null($user), UserNotFoundException::class);
+            throw_unless($user->is_admin, UserDoesNotAdminException::class);
             throw_if($this->validator->with($data)->fails('change-admin-role'), new UnexpectedException($this->validator->errors()->first()));
             $roles		= array_get($data,'roles');
             $user->roles()->sync($roles);
@@ -405,6 +494,11 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Remove all user's roles and put admin role for the user
+     * @param int $id
+     * @return bool
+     */
     public function transformInAdministrator( int $id ) : bool
     {
         $return = false;
@@ -413,7 +507,7 @@ class UsersService extends Service
         {
             $admin_role = Sentinel::getRoleRepository()->findBySlug(config('essence.admin_role_slug'));
             throw_if(is_null($user), UserNotFoundException::class);
-            throw_if($user->id_admin, UserAlreadyBeAdminException::class);
+            throw_if($user->id_admin, UserAlreadyIsAdminException::class);
             throw_if(is_null($admin_role), AdminRoleNotFound::class);
             $user->roles()->sync([$admin_role->id]);
             $user->save();
@@ -426,23 +520,36 @@ class UsersService extends Service
         return $return;
     }
 
+    /**
+     * Update roles for one user from array of ids.
+     * @param int $user_id
+     * @param array $roles
+     * @return bool
+     */
     public function updateRoles( int $user_id, array $roles = [] ) : bool
     {
         $return = false;
         $user = $this->usersRepository->find($user_id);
-        try {
+        try
+        {
             throw_if(is_null($user), UserNotFoundException::class);
             throw_unless(count($roles) > 0, InvalidParamsException::class);
             $user->roles()->sync($roles);
-            $user->save();
             $return = true;
-        } catch (Throwable $e)
+        }
+        catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
         }
         return $return;
     }
 
+    /**
+     * Force login with some user
+     * //TODO Check unit tests for this function, Sentinel::login does not work in package for some reason.
+     * @param int $user_id
+     * @return bool
+     */
     public function loginWith(int $user_id) : bool
     {
         $return = false;

@@ -25,12 +25,12 @@ class RolesTest extends TestCase
         $this->assertFalse($rolesValidator->with($data)->passes('create'));
     }
 
-    public function testValidatorSendingIncompleteDataAndResponseFalse()
+    public function testValidatorSendingOnlyNameResponseTrue()
     {
         $rolesValidator = $this->app->make(RolesValidator::class);
         $data = ['name' => 'admin'];
-        $this->assertFalse($rolesValidator->with($data)->passes('create'));
-        $this->assertEquals(1, $rolesValidator->errors()->count());
+        $this->assertTrue($rolesValidator->with($data)->passes('create'));
+        $this->assertEquals(0, $rolesValidator->errors()->count());
     }
 
     public function testValidatorSendingIncorrectDataAndResponseFalse()
