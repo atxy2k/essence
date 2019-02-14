@@ -12,9 +12,9 @@ class Essence
         $this->settingsService = $settingsService;
     }
 
-    public function getOption(string $key)
+    public function getOption(string $key, $default = '')
     {
-        return $this->settingsService->getOption($key);
+        return $this->settingsService->getOption($key) ?? $default;
     }
 
     public function updateOption(string $key, $value)

@@ -30,7 +30,7 @@ class SettingsRepository extends Repository
         if( !is_null($user_option) )
             $response = $user_option->value;
         else
-            $response = !is_null($system_option) ? $system_option : null;
+            $response = !is_null($system_option) ? $system_option->value : null;
         return $response;
     }
 
@@ -40,13 +40,14 @@ class SettingsRepository extends Repository
         $current = $this->findByKey($key, $user_id);
         if( !is_null($current) )
         {
+            $current->encode = $encode;
             $current->value = $value;
             $current->save();
             $return = $current;
         }
         else
         {
-            $current = $this->create(['key' => $key, 'value' => $value, 'encode' => $encode]);
+            $current = $this->create(['key' => $key, 'value' => $value, 'encode' => $encode, 'user_id' => $user_id]);
             throw_if(is_null($current), UnexpectedException::class);
             $return = $current;
         }

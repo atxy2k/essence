@@ -13,6 +13,7 @@ use Cartalyst\Sentinel\Reminders\EloquentReminder;
 use Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
 use Orchestra\Testbench\TestCase as OrchestraTest;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
+use Atxy2k\Essence\Facades\Essence;
 
 class TestCase extends OrchestraTest
 {

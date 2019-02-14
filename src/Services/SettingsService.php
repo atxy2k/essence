@@ -23,9 +23,9 @@ class SettingsService extends Service
         $this->settingsRepository = $settingsRepository;
     }
 
-    public function getOption(string $key)
+    public function getOption(string $key, int $user_id = null)
     {
-        return $this->settingsRepository->getValue($key);
+        return $this->settingsRepository->getValue($key, $user_id);
     }
 
     public function setOption(string $key, $value) : bool

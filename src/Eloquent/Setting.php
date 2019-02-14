@@ -18,20 +18,6 @@ class Setting extends Model
         'encode' => 'bool'
     ];
 
-    public function setValueAttribute($data)
-    {
-        $value = '';
-        try
-        {
-            $value = $this->encode ? json_encode($data) : $data;
-        }
-        catch (Throwable $e)
-        {
-            logger($e->getMessage());
-        }
-        $this->attributes['value'] = $value;
-    }
-
     public function getValueAttribute()
     {
         $return = null;

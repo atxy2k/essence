@@ -6,7 +6,8 @@
  * Time: 14:53
  */
 
-use Atxy2k\Essence\Exceptions\Essence\UnexpectedException;
+use Atxy2k\Essence\Essence;
+use Atxy2k\Essence\Services\SettingsService;
 use DB;
 use Atxy2k\Essence\Repositories\SettingsRepository;
 use Atxy2k\Essence\Eloquent\Setting;
@@ -68,23 +69,32 @@ class SettingsTest extends TestCase
         DB::rollBack();
     }
 
-//    public function testCreateCustomUserConfig()
-//    {
-//        DB::beginTransaction();
-//        $key = 'system_layout';
-//        $user_id = 1;
-//        $settingsRepository = $this->app->make(SettingsRepository::class);
-//        /** @var Setting $setting */
-//        $setting = $settingsRepository->setValue($key, 'metronic',$user_id);
-//        $this->assertNotNull($setting);
-//        $this->assertInstanceOf(Setting::class, $setting);
-//        $this->assertEquals($setting->key, 'system_layout');
-//        $this->assertFalse($setting->encode);
-//        $this->assertEquals($setting->value, 'metronic');
-//        $this->assertTrue(is_string($setting->value));
-//        $this->assertNotNull($setting->created_at);
-//        $this->assertNotNull($setting->updated_at);
-//    }
+    public function testCreateCustomUserConfig()
+    {
+        DB::beginTransaction();
+        $key = 'system_layout';
+        $user_id = 1;
+        $settingsRepository = $this->app->make(SettingsRepository::class);
+        /** @var Setting $setting */
+        $setting = $settingsRepository->setValue($key, 'metronic',$user_id);
+        $this->assertNotNull($setting);
+        $this->assertInstanceOf(Setting::class, $setting);
+        $this->assertEquals($setting->key, $key);
+        $this->assertFalse($setting->encode);
+        $this->assertEquals($setting->value, 'metronic');
+        $this->assertTrue(is_string($setting->value));
+        $this->assertNotNull($setting->created_at);
+        $this->assertNotNull($setting->updated_at);
+        $this->assertEquals($user_id, $setting->user_id);
+
+        $global_setting = $settingsRepository->setValue($key, 'material_admin');
+        $this->assertNotEquals($setting->value, $global_setting->value);
+
+        $user_option = $settingsRepository->getValue($key, $user_id);
+        $this->assertEquals($user_option, $setting->value);
+        $this->assertNotEquals($user_option, $global_setting->value);
+        DB::commit();
+    }
 
     public function testFindValueAfterSavedIt()
     {
@@ -112,12 +122,24 @@ class SettingsTest extends TestCase
             'id' => 1,
             'first_name' => 'ivan'
         ]);
+        $this->assertTrue($setting->encode);
+        $this->assertEquals($key, $setting->key);
         $this->assertNotNull($setting);
         $findIt = $settingsRepository->getValue($key);
         $this->assertNotNull($findIt);
         $this->assertTrue(is_array($findIt));
         $this->assertEquals($findIt, [ 'id' => 1, 'first_name' => 'ivan' ]);
         DB::rollBack();
+    }
+
+    public function testFindValueThatDoesNotExistAndReturnDefaultOptionSuccess()
+    {
+        $key = 'menu_is_open';
+        /** @var Essence $facade */
+        $facade = $this->app->make(Essence::class);
+        $this->assertTrue($facade->getOption($key, true));
+        $this->assertFalse($facade->getOption($key, false));
+        $this->assertEquals('testing',$facade->getOption($key, 'testing'));
     }
 
 }
