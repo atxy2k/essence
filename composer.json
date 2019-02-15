@@ -1,7 +1,7 @@
 {
     "name": "atxy2k/essence",
     "description": "Core for you can start a project with a custom infrastructure with a hybrid pattern and awesome functionality",
-    "license": "license",
+    "license": "MIT",
     "authors": [
         {
             "name": "Ivan Alvarado",
