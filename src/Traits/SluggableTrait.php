@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 Trait SluggableTrait
 {
-    public function findBySlug( $slug, $id = null ) : Model
+    public function findBySlug( $slug, $id = null ) : ?Model
     {
         return !is_null($id) ? $this->query->where('slug', $slug)->where('id','!=', $id)->first() : $this->query->where('slug', $slug)->first();
     }
