@@ -95,7 +95,6 @@ class UsersService extends Service
 
     /**
      * Try login a user with email and password.
-     * //TODO test please, something happend when I try to test, Sentinel::stateless return false
      * @param array $data
      * @return bool
      */
@@ -109,9 +108,8 @@ class UsersService extends Service
             try
             {
                 throw_if( is_null(Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email']))), UserNotFoundException::class );
-                $_user = Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email']));
+                $_user = Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email', 'password']));
                 throw_if($_user->roles->count() === 0, DoesntHaveRolesException::class);
-                throw_unless(Sentinel::stateless($credentials), IncorrectPasswordException::class);
                 if($remember)
                     Sentinel::authenticateAndRemember($data);
                 else

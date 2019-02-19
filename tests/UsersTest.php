@@ -230,40 +230,40 @@ class UsersTest extends TestCase
         DB::rollBack();
     }
 
-//TODO check this function, doesn't work in unit tests but I don't know if the reason is the session or something is wrong
-//    public function testLoginUserWithRealData()
-//    {
-//        DB::beginTransaction();
-//        /** @var UsersService $usersService */
-//        $usersService = $this->app->make(UsersService::class);
-//        /** @var RolesService $rolesService */
-//        $rolesService = $this->app->make(RolesService::class);
-//        $role_data = [
-//            'name' => 'tester',
-//        ];
-//        $role = $rolesService->create($role_data);
-//        $username = 'ivan.alvarado@serprogramador.es';
-//        $password = uniqid();
-//        $data = [
-//            'first_name' => 'Ivan',
-//            'last_name'  => 'Alvarado',
-//            'email'      => $username,
-//            'email_confirmation' => $username,
-//            'password'   => $password,
-//            'password_confirmation'   => $password,
-//            'roles'      => [$role->id],
-//            'activate'   => true
-//        ];
-//        $user = $usersService->register($data);
-//        $this->assertNotNull($user);
-//        $credentials = [
-//            'email' => $username,
-//            'password' => $password
-//        ];
-//        $authenticate = $usersService->login($credentials);
-//        $this->assertTrue($authenticate, $usersService->errors()->first());
-//        DB::rollBack();
-//    }
+    //TODO check this function, doesn't work in unit tests but I don't know if the reason is the session or something is wrong
+    public function testLoginUserWithRealData()
+    {
+        DB::beginTransaction();
+        /** @var UsersService $usersService */
+        $usersService = $this->app->make(UsersService::class);
+        /** @var RolesService $rolesService */
+        $rolesService = $this->app->make(RolesService::class);
+        $role_data = [
+            'name' => 'tester',
+        ];
+        $role = $rolesService->create($role_data);
+        $username = 'ivan.alvarado@serprogramador.es';
+        $password = uniqid();
+        $data = [
+            'first_name' => 'Ivan',
+            'last_name'  => 'Alvarado',
+            'email'      => $username,
+            'email_confirmation' => $username,
+            'password'   => $password,
+            'password_confirmation'   => $password,
+            'roles'      => [$role->id],
+            'activate'   => true
+        ];
+        $user = $usersService->register($data);
+        $this->assertNotNull($user);
+        $credentials = [
+            'email' => $username,
+            'password' => $password
+        ];
+        $authenticate = $usersService->login($credentials);
+        $this->assertTrue($authenticate, $usersService->errors()->first());
+        DB::rollBack();
+    }
 
     public function testResetUserPasswordReturnTrue()
     {
