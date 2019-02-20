@@ -2,14 +2,13 @@
 
 namespace Atxy2k\Essence;
 
-use Collective\Html\FormFacade;
-use Collective\Html\HtmlFacade;
-use Collective\Html\HtmlServiceProvider;
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
+use Cartalyst\Sentinel\Laravel\Facades\Reminder;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Cartalyst\Sentinel\Laravel\SentinelServiceProvider;
 use Illuminate\Container\Container;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
-use Prologue\Alerts\AlertsServiceProvider;
-use Prologue\Alerts\Facades\Alert;
 
 class EssenceServiceProvider extends ServiceProvider
 {
@@ -43,18 +42,13 @@ class EssenceServiceProvider extends ServiceProvider
         $this->app->singleton('essence', function (Container $app) {
             return $app->make(Essence::class);
         });
-        /**********************************************
-         * Adding laravel collective
-         **********************************************/
-        $this->app->register(HtmlServiceProvider::class);
-        $loader = AliasLoader::getInstance();
-        $loader->alias('Form', FormFacade::class);
-        $loader->alias('HTML', HtmlFacade::class);
-        /**********************************************
-         * Adding alerts
-         **********************************************/
-        $this->app->register(AlertsServiceProvider::class);
-        $loader->alias('Alert', Alert::class);
+
+        $this->app->register(SentinelServiceProvider::class);
+
+        $alias = AliasLoader::getInstance();
+        $alias->alias('Activation', Activation::class);
+        $alias->alias('Reminder', Reminder::class);
+        $alias->alias('Sentinel', Sentinel::class);
     }
 
     /**
@@ -64,7 +58,7 @@ class EssenceServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['essence'];
+        return ['essence','auth', 'sentry'];
     }
     
     /**
