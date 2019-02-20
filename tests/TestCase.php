@@ -6,6 +6,7 @@
  * Time: 19:52
  */
 
+use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Eloquent\User;
 use Cartalyst\Sentinel\Laravel\Facades\Activation;
 use Cartalyst\Sentinel\Laravel\Facades\Reminder;
@@ -23,6 +24,8 @@ class TestCase extends OrchestraTest
 //        return [EssenceServiceProvider::class];
 //    }
 //
+
+
     protected function getPackageAliases($app)
     {
         return [
@@ -47,6 +50,7 @@ class TestCase extends OrchestraTest
         ]);
         $app['config']->set('essence.admin_role_slug', 'developer');
         $app['config']->set('sentinel.users.model', User::class);
+        $app['config']->set('sentinel.roles.model', Role::class);
         $app['config']->set('config.key', 'base64:+74b9J7uq7IWsUt5D8ij+dwA1nV3+I48P1WkN4tleHw=');
     }
 
