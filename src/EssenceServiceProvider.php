@@ -2,8 +2,14 @@
 
 namespace Atxy2k\Essence;
 
+use Collective\Html\FormFacade;
+use Collective\Html\HtmlFacade;
+use Collective\Html\HtmlServiceProvider;
 use Illuminate\Container\Container;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use Prologue\Alerts\AlertsServiceProvider;
+use Prologue\Alerts\Facades\Alert;
 
 class EssenceServiceProvider extends ServiceProvider
 {
@@ -37,6 +43,18 @@ class EssenceServiceProvider extends ServiceProvider
         $this->app->singleton('essence', function (Container $app) {
             return $app->make(Essence::class);
         });
+        /**********************************************
+         * Adding laravel collective
+         **********************************************/
+        $this->app->register(HtmlServiceProvider::class);
+        $loader = AliasLoader::getInstance();
+        $loader->alias('Form', FormFacade::class);
+        $loader->alias('HTML', HtmlFacade::class);
+        /**********************************************
+         * Adding alerts
+         **********************************************/
+        $this->app->register(AlertsServiceProvider::class);
+        $loader->alias('Alert', Alert::class);
     }
 
     /**
