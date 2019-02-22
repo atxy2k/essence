@@ -34,7 +34,7 @@ class SettingsRepository extends Repository
         return $response;
     }
 
-    public function setValue(string $key, string $value, int $user_id = null, $encode = false) : ?Setting
+    public function setValue(string $key, string $value = null, int $user_id = null, $encode = false) : ?Setting
     {
         $return = null;
         $current = $this->findByKey($key, $user_id);
@@ -54,7 +54,7 @@ class SettingsRepository extends Repository
         return $return;
     }
 
-    public function setEncodedValue(string $key, array $value, int $user_id = null) : ?Setting
+    public function setEncodedValue(string $key, array $value = [], int $user_id = null) : ?Setting
     {
         $return = null;
         try {
