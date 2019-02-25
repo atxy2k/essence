@@ -455,8 +455,9 @@ class UsersService extends Service
         try {
             throw_if(is_null($user), UserNotFoundException::class);
             $current_user = Sentinel::getUser();
-            if(!is_null($current_user))
-                throw_if( $user->id != $current_user->id, DeleteMyselfException::class);
+            if($current_user!==null) {
+                throw_if($user->id === $current_user->id, DeleteMyselfException::class);
+            }
             $return = $this->usersRepository->delete($user->id);
         } catch (Throwable $e)
         {
