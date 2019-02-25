@@ -14,7 +14,7 @@ class User extends EloquentUser
     protected $fillable = [ 'email', 'password', 'permissions', 'last_login', 'first_name', 'last_name', 'created_at', 'updated_at'];
     protected $guarded  = [ 'id' ];
     protected $dates    = [ 'last_login', 'created_at', 'updated_at' ];
-    protected $appends  = [ 'full_name' ];
+    protected $appends  = [ 'full_name', 'is_admin', 'is_activated' ];
 
     public function getIsAdminAttribute()
     {
