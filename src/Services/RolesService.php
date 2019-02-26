@@ -89,11 +89,12 @@ class RolesService extends Service
                 $permissions = [];
                 foreach ( array_get($data,'routes', []) as $route => $val )
                 {
-                    $permissions[ $route ] = boolval( intval($val) );
+                    $permissions[ $route ] = (bool) (int) $val;
                 }
-                $role = Sentinel::getRoleRepository()->createModel()->create([
+                $role = $this->rolesRepository->create([
                     'name'  => array_get($data,'name'),
                     'slug'  => str_slug(array_get($data,'name')),
+                    'blocked'  => str_slug(array_get($data,'blocked', 0)),
                     'permissions' => $permissions
                 ]);
                 throw_if(is_null($role), RoleNotCreatedException::class);

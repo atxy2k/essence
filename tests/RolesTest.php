@@ -64,8 +64,31 @@ class RolesTest extends TestCase
         $this->assertNotNull($role->created_at);
         $this->assertNotNull($role->updated_at);
         $this->assertEquals(0,$role->users->count());
+        $this->assertNotNull($role->blocked);
+        $this->assertFalse($role->blocked);
         DB::rollBack();
     }
+
+    public function testCreateBlockedRoleWithoutUsers()
+    {
+        DB::beginTransaction();
+        $rolesService = $this->app->make(RolesService::class);
+        $name = 'test';
+        $permissions = ['admin.dashboard.index' => 1];
+        $data = ['name' => $name, 'routes' =>  $permissions, 'blocked' => 1];
+        $role = $rolesService->create($data);
+        $this->assertNotNull($role, $rolesService->errors()->first());
+        $this->assertInstanceOf(RoleInterface::class, $role);
+        $this->assertEquals($role->name, $name);
+        $this->assertEquals($role->permissions, $permissions);
+        $this->assertNotNull($role->created_at);
+        $this->assertNotNull($role->updated_at);
+        $this->assertEquals(0,$role->users->count());
+        $this->assertNotNull($role->blocked);
+        $this->assertTrue($role->blocked);
+        DB::rollBack();
+    }
+
 
     public function testCreateRolWithUsers()
     {
