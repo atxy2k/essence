@@ -67,7 +67,7 @@ class MigrationCartalystSentinel extends Migration
             $table->string('slug');
             $table->string('name');
             $table->text('permissions')->nullable();
-            $table->boolean('blocked')->default(true);
+            $table->tinyInteger('blocked')->default(0);
             $table->timestamps();
             $table->unique('slug');
         });
