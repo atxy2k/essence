@@ -158,7 +158,6 @@ class RolesService extends Service
     }
 
     /**
-     * Clone a rol creating a copy of it and save it as new role.
      * @param int $id
      * @param string $name
      * @param bool $include_users
