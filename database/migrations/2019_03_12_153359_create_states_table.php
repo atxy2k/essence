@@ -18,9 +18,11 @@ class CreateStatesTable extends Migration
             $table->string('name');
             $table->string('key')->nullable();
             $table->string('slug', 140)->unique();
+            $table->unsignedInteger('country_id');
             $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
 	        $table->softDeletes();
         });
     }

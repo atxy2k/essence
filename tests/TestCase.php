@@ -12,6 +12,7 @@ use Cartalyst\Sentinel\Laravel\Facades\Activation;
 use Cartalyst\Sentinel\Laravel\Facades\Reminder;
 use Cartalyst\Sentinel\Reminders\EloquentReminder;
 use Cartalyst\Sentinel\Reminders\IlluminateReminderRepository;
+use Cviebrock\EloquentSluggable\ServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTest;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
 use Atxy2k\Essence\Facades\Essence;
@@ -19,12 +20,10 @@ use Atxy2k\Essence\Facades\Essence;
 class TestCase extends OrchestraTest
 {
 
-//    protected function getPackageProviders($app)
-//    {
-//        return [EssenceServiceProvider::class];
-//    }
-//
-
+    protected function getPackageProviders($app)
+    {
+        return [ServiceProvider::class];
+    }
 
     protected function getPackageAliases($app)
     {
@@ -38,7 +37,8 @@ class TestCase extends OrchestraTest
 
     protected function getEnvironmentSetUp($app)
     {
-        // Setup default database to use sqlite :memory:
+        $app['config']->set('logging.default', 'daily');
+        $app['config']->set('logging.channels.daily.path', __DIR__.'/../logs/laravel.log');
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'    => 'mysql',
@@ -52,6 +52,7 @@ class TestCase extends OrchestraTest
         $app['config']->set('sentinel.users.model', User::class);
         $app['config']->set('sentinel.roles.model', Role::class);
         $app['config']->set('config.key', 'base64:+74b9J7uq7IWsUt5D8ij+dwA1nV3+I48P1WkN4tleHw=');
+        $app['config']->set('sluggable.onUpdate', true);
     }
 
 }

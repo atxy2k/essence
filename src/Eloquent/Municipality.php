@@ -15,7 +15,7 @@ use App\Modules\Eloquent\Localidad;
 
 class Municipality extends Model
 {
-    protected $table = 'municipality';
+    protected $table = 'municipalities';
     protected $fillable = [ 'name','key','slug','state_id', 'user_id', 'created_at', 'updated_at','deleted_at' ];
     protected $guarded  = [ 'id' ];
     use SoftDeletes;
@@ -30,18 +30,13 @@ class Municipality extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function user_updated() : ?BelongsTo
-    {
-        return $this->belongsTo(User::class,'user_updated_id');
-    }
-
-    public function state() : ?State
+    public function state() : ?BelongsTo
     {
         return $this->belongsTo(State::class);
     }
 
     public function suburbs() : ?HasMany
     {
-        return $this->hasMany(Localidad::class);
+        return $this->hasMany(Suburb::class);
     }
 }

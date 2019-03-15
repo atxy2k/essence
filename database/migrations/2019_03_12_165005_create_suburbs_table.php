@@ -19,7 +19,6 @@ class CreateSuburbsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('slug', 140);
-            $table->unsignedInteger('country_id');
             $table->string('zone')->nullable();
             $table->unsignedInteger('postal_code');
             $table->string('settlement', 140)->nullable();
@@ -28,7 +27,6 @@ class CreateSuburbsTable extends Migration
             $table->integer('user_id')->unsigned()->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->foreign('municipality_id')->references('id')->on('municipalities')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();

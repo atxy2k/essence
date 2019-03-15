@@ -3,26 +3,15 @@
 * Created by PhpStorm.
 * User: Ivan Alvarado
 * Date: 31/05/2018* Time: 16:14*/
-use Cviebrock\EloquentSluggable\Sluggable;
 use Atxy2k\Essence\Infraestructure\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
     protected $table = 'countries';
     protected $fillable = [ 'name','slug','user_id', 'created_at', 'updated_at' ];
     protected $guarded  = [ 'id' ];
-
-    use Sluggable;
-
-    public function sluggable() : array
-    {
-        return [
-            'slug' => [
-                'source' => 'name'
-            ]
-        ];
-    }
 
     public function __toString() : ?string
     {
@@ -34,9 +23,9 @@ class Country extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function user_updated() : ?BelongsTo
+    public function states() : ?HasMany
     {
-        return $this->belongsTo(User::class,'user_updated_id');
+        return $this->hasMany(State::class);
     }
 
 }

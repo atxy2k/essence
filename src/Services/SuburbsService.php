@@ -14,6 +14,7 @@ use Atxy2k\Essence\Validators\SuburbsValidator;
 use Sentinel;
 use DB;
 use Throwable;
+use Illuminate\Support\Str;
 
 class SuburbsService extends Service
 {
@@ -45,7 +46,7 @@ class SuburbsService extends Service
             try
             {
                 DB::beginTransaction();
-                throw_unless($this->suburbsRepository->slugFromTextIsAvailable( $data['municipaly_id'], $data['name'] ),
+                throw_unless($this->suburbsRepository->slugFromTextIsAvailable( $data['municipality_id'], $data['name'] ),
                     SuburbNotFoundException::class);
                 $data['slug'] = Str::slug($data['name']);
                 $data['user_id'] = Sentinel::check() ? Sentinel::getUser()->getUserId() : null;
@@ -82,9 +83,9 @@ class SuburbsService extends Service
             try
             {
                 DB::beginTransaction();
-                throw_unless($this->suburbsRepository->slugFromTextIsAvailable( $data['municipaly_id'], $data['name'], $id ) ,
+                throw_unless($this->suburbsRepository->slugFromTextIsAvailable( $data['municipality_id'], $data['name'], $id ) ,
                     SuburbNotFoundException::class);
-                $data['user_updated_id'] = Sentinel::getUser()->getUserId();
+                $data['slug'] = Str::slug($data['name']);
                 if( $this->suburbsRepository->update($id, $data) )
                 {
                     /** @var Suburb|null $return */

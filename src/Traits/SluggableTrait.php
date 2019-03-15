@@ -20,7 +20,7 @@ Trait SluggableTrait
         return is_null($this->findBySlug($slug, $id));
     }
 
-    public function slugFromTextIsAvailable( $text, $id = null ) : bool
+    public function slugFromTextIsAvailable(string $text, $id = null ) : bool
     {
         $slug = Str::slug( $text );
         return is_null($this->findBySlug($slug, $id));

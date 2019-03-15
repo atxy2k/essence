@@ -24,7 +24,7 @@ class SuburbsRepository extends Repository
             ->get();
     }
 
-    public function findBySlug(int $municipality_id, string $slug, int $id = null ) : Suburb
+    public function findBySlug(int $municipality_id, string $slug, int $id = null ) : ?Suburb
     {
         return $id !== null ?
             $this->query

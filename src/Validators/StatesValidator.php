@@ -11,10 +11,12 @@ class StatesValidator extends Validator
 {
     protected $rules = [
         'create' => [
-            'name' => 'required'
+            'name' => 'required',
+            'country_id' => 'required|exists:countries,id'
         ],
         'update' => [
-            'name' => 'required'
+            'name' => 'required',
+            'country_id' => 'required|exists:countries,id'
         ],
     ];
 }

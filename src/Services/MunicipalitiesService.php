@@ -14,6 +14,7 @@ use Atxy2k\Essence\Validators\MunicipalitiesValidator;
 use DB;
 use Throwable;
 use Sentinel;
+use Illuminate\Support\Str;
 
 class MunicipalitiesService extends Service
 {
@@ -85,6 +86,7 @@ class MunicipalitiesService extends Service
                 DB::beginTransaction();
                 if( $this->municipalitiesRepository->slugFromTextIsAvailable( $data['state_id'], $data['name'], $id ) )
                 {
+                    $data['slug'] = Str::slug($data['name']);
                     if( $this->municipalitiesRepository->update($id, $data) )
                     {
                         /** @var Municipality|null $return */

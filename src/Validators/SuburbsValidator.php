@@ -13,14 +13,12 @@ class SuburbsValidator extends Validator
         'create' => [
             'name' => 'required',
             'postal_code' => 'required',
-            'settlement' => 'required',
             'type' => 'required',
             'municipality_id' => 'required|exists:municipalities,id',
         ],
         'update' => [
             'name' => 'required',
             'postal_code' => 'required',
-            'settlement' => 'required',
             'type' => 'required',
             'municipality_id' => 'required|exists:municipalities,id',
         ],

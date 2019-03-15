@@ -11,6 +11,7 @@ use Atxy2k\Essence\Exceptions\Countries\CountryNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Repositories\CountriesRepository;
 use Atxy2k\Essence\Validators\CountriesValidator;
+use Illuminate\Support\Str;
 use Sentinel;
 use Throwable;
 use DB;
@@ -48,6 +49,7 @@ class CountriesService extends Service
                 DB::beginTransaction();
                 throw_unless($this->countriesRepository->slugFromTextIsAvailable( $data['name'] ),
                     NameNotAvailableException::class);
+                $data['slug'] = Str::slug($data['name']);
                 $data['user_id'] = Sentinel::check() ? Sentinel::getUser()->getUserId() : null;
                 /** @var Country|null $return */
                 $return = $this->countriesRepository->create($data);
@@ -84,6 +86,7 @@ class CountriesService extends Service
                 DB::beginTransaction();
                 throw_unless($this->countriesRepository->slugFromTextIsAvailable( $data['name'], $id ),
                     NameNotAvailableException::class);
+                $data['slug'] = Str::slug($data['name']);
                 if( $this->countriesRepository->update($id, $data) )
                 {
                     /** @var Country|null $return */
