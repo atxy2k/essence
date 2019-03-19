@@ -15,8 +15,7 @@
         "illuminate/support": "~5",
         "cartalyst/sentinel": "2.0.*",
         "laravelcollective/html": "^5.4.0",
-        "prologue/alerts": "^0.4.3",
-        "cviebrock/eloquent-sluggable": "4.8"
+        "prologue/alerts": "^0.4.3"
     },
     "require-dev": {
         "phpunit/phpunit": "~7.0",
