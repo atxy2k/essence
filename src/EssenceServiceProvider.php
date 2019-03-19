@@ -2,6 +2,10 @@
 
 namespace Atxy2k\Essence;
 
+use Atxy2k\Essence\Commands\CountriesCommandSeeder;
+use Atxy2k\Essence\Commands\MexicanTowns\MexicanTownsCommand;
+use Atxy2k\Essence\Commands\MunicipalitiesCommandSeeder;
+use Atxy2k\Essence\Commands\StatesCommandSeeder;
 use Cartalyst\Sentinel\Laravel\Facades\Activation;
 use Cartalyst\Sentinel\Laravel\Facades\Reminder;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
@@ -68,6 +72,12 @@ class EssenceServiceProvider extends ServiceProvider
      */
     protected function bootForConsole()
     {
+        $this->commands([
+            CountriesCommandSeeder::class,
+            MexicanTownsCommand::class,
+            StatesCommandSeeder::class,
+            MunicipalitiesCommandSeeder::class
+        ]);
         // Publishing the configuration file.
         $this->publishes([
             __DIR__.'/../config/essence.php' => config_path('essence.php'),
@@ -87,8 +97,5 @@ class EssenceServiceProvider extends ServiceProvider
         /*$this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/atxy2k'),
         ], 'essence.views');*/
-
-        // Registering package commands.
-        // $this->commands([]);
     }
 }
