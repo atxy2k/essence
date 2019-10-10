@@ -229,14 +229,14 @@ class Repository implements RepositoryInterface, CriteriaInterface
         if(ends_with($name, 'WithCriteria'))
         {
             $functionToCall = str_replace('WithCriteria', '', $name);
-            throw_unless(function_exists($functionToCall), BadMethodCallException::class);
-            $otherModel = $this->app->make($this->name);
+            throw_unless(method_exists($this,$functionToCall), BadMethodCallException::class);
+            $otherModel = $this->app->make($this->model);
             /** @var Criteria $criteria */
             foreach ( $this->getCriteria() as $criteria )
             {
                 $this->query = $criteria->apply($otherModel, $this);
             }
-            $response = call_user_func($functionToCall, $arguments);
+            $response = call_user_func_array([$this,$functionToCall], $arguments);
             $this->query = $otherModel;
             return $response;
         }
