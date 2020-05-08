@@ -12,9 +12,7 @@
     "homepage": "https://github.com/atxy2k/essence",
     "keywords": ["Laravel", "Essence"],
     "require": {
-        "illuminate/support": "~7",
-        "laravelcollective/html": "^6",
-        "prologue/alerts": "^0.4.3"
+        "illuminate/support": "~7"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4|^9.0",
@@ -43,6 +41,6 @@
         }
     },
     "scripts": {
-        "test": "vendor\\bin\\phpunit"
+        "test": "vendor/bin/phpunit"
     }
 }

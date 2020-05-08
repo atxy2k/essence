@@ -1,31 +1,27 @@
 <?php namespace Atxy2k\Essence;
 
-use Atxy2k\Essence\Services\SettingsService;
+use Atxy2k\Essence\Eloquent\User;
+use Atxy2k\Essence\Services\ConfigurationsService;
 use Throwable;
 
 class Essence
 {
-    /** @var SettingsService */
-    protected $settingsService;
+    /** @var ConfigurationsService */
+    protected $configurationsService;
 
-    public function __construct(SettingsService $settingsService)
+    public function __construct(ConfigurationsService $configurationsService)
     {
-        $this->settingsService = $settingsService;
+        $this->configurationsService = $configurationsService;
     }
 
-    public function getOption(string $key, $default = '')
+    public function setOption(string $key, $default = '')
     {
-        return $this->settingsService->getOption($key) ?? $default;
+        return $this->configurationsService->getConfiguration($key) ?? $default;
     }
 
-    public function updateOption(string $key, $value)
+    public function getOption(string $key, $value, $encode = false, User $user = null)
     {
-        return $this->settingsService->setOption($key, $value);
-    }
-
-    public function updateUserOption(string $key, $value)
-    {
-        return $this->settingsService->setUserOption($key, $value);
+        return $this->configurationsService->setConfiguration($key, $value, $encode, $user);
     }
 
     public function log(Throwable $e)

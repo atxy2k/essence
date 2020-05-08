@@ -18,8 +18,8 @@ class CreateConfigurationsTable extends Migration
             $table->string('key', 140);
             $table->longText('value')->nullable();
             $table->tinyInteger('encode');
-            $table->unsignedBigInteger('configurable_id');
-            $table->string('configurable_type');
+            $table->unsignedBigInteger('configurable_id')->nullable();
+            $table->string('configurable_type')->nullable();
             $table->timestamps();
         });
     }
