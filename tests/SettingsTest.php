@@ -10,7 +10,7 @@ use Atxy2k\Essence\Essence;
 use Atxy2k\Essence\Services\SettingsService;
 use DB;
 use Atxy2k\Essence\Repositories\SettingsRepository;
-use Atxy2k\Essence\Eloquent\Setting;
+use Atxy2k\Essence\Eloquent\Configuration;
 
 class SettingsTest extends TestCase
 {
@@ -19,7 +19,7 @@ class SettingsTest extends TestCase
     {
         $settingsRepository = $this->app->make(SettingsRepository::class);
         $fake_key = uniqid();
-        /** @var Setting $setting */
+        /** @var Configuration $setting */
         $setting = $settingsRepository->findByKey($fake_key);
         $this->assertNull($setting);
     }
@@ -28,10 +28,10 @@ class SettingsTest extends TestCase
     {
         DB::beginTransaction();
         $settingsRepository = $this->app->make(SettingsRepository::class);
-        /** @var Setting $setting */
+        /** @var Configuration $setting */
         $setting = $settingsRepository->setValue('system_layout', 'metronic');
         $this->assertNotNull($setting);
-        $this->assertInstanceOf(Setting::class, $setting);
+        $this->assertInstanceOf(Configuration::class, $setting);
         $this->assertEquals($setting->key, 'system_layout');
         $this->assertFalse($setting->encode);
         $this->assertEquals($setting->value, 'metronic');
@@ -46,14 +46,14 @@ class SettingsTest extends TestCase
     {
         DB::beginTransaction();
         $settingsRepository = $this->app->make(SettingsRepository::class);
-        /** @var Setting $setting */
+        /** @var Configuration $setting */
         $setting = $settingsRepository->setEncodedValue('other_settings', [
             'id' => 1,
             'first_name' => 'Ivan',
             'last_name'  => 'Alvarado'
         ]);
         $this->assertNotNull($setting);
-        $this->assertInstanceOf(Setting::class, $setting);
+        $this->assertInstanceOf(Configuration::class, $setting);
         $this->assertTrue($setting->encode);
         $this->assertEquals($setting->key, 'other_settings');
         $this->assertTrue(is_array($setting->value));
@@ -75,10 +75,10 @@ class SettingsTest extends TestCase
         $key = 'system_layout';
         $user_id = 1;
         $settingsRepository = $this->app->make(SettingsRepository::class);
-        /** @var Setting $setting */
+        /** @var Configuration $setting */
         $setting = $settingsRepository->setValue($key, 'metronic',$user_id);
         $this->assertNotNull($setting);
-        $this->assertInstanceOf(Setting::class, $setting);
+        $this->assertInstanceOf(Configuration::class, $setting);
         $this->assertEquals($setting->key, $key);
         $this->assertFalse($setting->encode);
         $this->assertEquals($setting->value, 'metronic');
@@ -101,7 +101,7 @@ class SettingsTest extends TestCase
         DB::beginTransaction();
         $key = 'system_layout';
         $settingsRepository = $this->app->make(SettingsRepository::class);
-        /** @var Setting $setting */
+        /** @var Configuration $setting */
         $setting = $settingsRepository->setValue($key, 'metronic');
         $this->assertNotNull($setting);
 
@@ -117,7 +117,7 @@ class SettingsTest extends TestCase
         DB::beginTransaction();
         $key = 'system_layout';
         $settingsRepository = $this->app->make(SettingsRepository::class);
-        /** @var Setting $setting */
+        /** @var Configuration $setting */
         $setting = $settingsRepository->setEncodedValue($key, [
             'id' => 1,
             'first_name' => 'ivan'

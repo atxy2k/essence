@@ -1,15 +1,19 @@
 <?php namespace Atxy2k\Essence\Eloquent;
+use Atxy2k\Essence\Infraestructure\Model;
+use Atxy2k\Essence\Traits\Configurable;
+use Atxy2k\Essence\Traits\Interactuable;
+
 /**
  * Created by PhpStorm.
  * User: atxy2k
  * Date: 11/2/2019
  * Time: 11:25
  */
-use Cartalyst\Sentinel\Users\EloquentUser;
-use Sentinel;
 
-class User extends EloquentUser
+class User extends Model
 {
+    use Interactuable;
+    use Configurable;
 
     protected $fillable = [ 'email', 'password', 'permissions', 'last_login', 'first_name', 'last_name', 'created_at', 'updated_at'];
     protected $guarded  = [ 'id' ];
@@ -18,7 +22,7 @@ class User extends EloquentUser
 
     public function getIsAdminAttribute()
     {
-        return $this->inRole( config('essence.admin_role_slug') );
+        return false;
     }
 
     public function getFullNameAttribute() : string
@@ -28,13 +32,17 @@ class User extends EloquentUser
 
     public function getIsActivatedAttribute() : bool
     {
-        $activation = Sentinel::getActivationRepository()->completed($this);
-        return !is_null($activation) && $activation!=false;
+        return false;
     }
 
     public function changeEmailRequests()
     {
         return $this->hasMany(ChangeEmailRequest::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles');
     }
 
 }

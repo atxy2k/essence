@@ -10,7 +10,6 @@ use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Repositories\RolesRepository;
 use Atxy2k\Essence\Validators\RolesValidator;
 use Atxy2k\Essence\Services\RolesService;
-use Cartalyst\Sentinel\Roles\RoleInterface;
 use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -58,7 +57,7 @@ class RolesTest extends TestCase
         $data = ['name' => $name, 'routes' =>  $permissions];
         $role = $rolesService->create($data);
         $this->assertNotNull($role, $rolesService->errors()->first());
-        $this->assertInstanceOf(RoleInterface::class, $role);
+        $this->assertInstanceOf(Role::class, $role);
         $this->assertEquals($role->name, $name);
         $this->assertEquals($role->permissions, $permissions);
         $this->assertNotNull($role->created_at);
@@ -78,7 +77,7 @@ class RolesTest extends TestCase
         $data = ['name' => $name, 'routes' =>  $permissions, 'blocked' => 1];
         $role = $rolesService->create($data);
         $this->assertNotNull($role, $rolesService->errors()->first());
-        $this->assertInstanceOf(RoleInterface::class, $role);
+        $this->assertInstanceOf(Role::class, $role);
         $this->assertEquals($role->name, $name);
         $this->assertEquals($role->permissions, $permissions);
         $this->assertNotNull($role->created_at);
@@ -101,7 +100,7 @@ class RolesTest extends TestCase
         $data = ['name' => $name, 'routes' =>  $permissions, 'users' => $users];
         $role = $rolesService->create($data);
         $this->assertNotNull($role, $rolesService->errors()->first());
-        $this->assertInstanceOf(RoleInterface::class, $role);
+        $this->assertInstanceOf(Role::class, $role);
         $this->assertEquals($role->name, $name);
         $this->assertEquals($role->slug, Str::slug($name));
         $this->assertEquals($role->permissions, $permissions);
@@ -181,7 +180,7 @@ class RolesTest extends TestCase
         $role = $rolesService->create($data);
         $role_cloned = $rolesService->clone($role->id, 'test 2');
         $this->assertNotNull($role_cloned);
-        $this->assertInstanceOf(RoleInterface::class, $role_cloned);
+        $this->assertInstanceOf(Role::class, $role_cloned);
         $this->assertEquals($role_cloned->permissions, $role->permissions);
         DB::rollBack();
     }

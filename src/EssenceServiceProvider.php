@@ -2,14 +2,6 @@
 
 namespace Atxy2k\Essence;
 
-use Atxy2k\Essence\Commands\CountriesCommandSeeder;
-use Atxy2k\Essence\Commands\MexicanTowns\MexicanTownsCommand;
-use Atxy2k\Essence\Commands\MunicipalitiesCommandSeeder;
-use Atxy2k\Essence\Commands\StatesCommandSeeder;
-use Cartalyst\Sentinel\Laravel\Facades\Activation;
-use Cartalyst\Sentinel\Laravel\Facades\Reminder;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Cartalyst\Sentinel\Laravel\SentinelServiceProvider;
 use Illuminate\Container\Container;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
@@ -47,12 +39,12 @@ class EssenceServiceProvider extends ServiceProvider
             return $app->make(Essence::class);
         });
 
-        $this->app->register(SentinelServiceProvider::class);
-
-        $alias = AliasLoader::getInstance();
-        $alias->alias('Activation', Activation::class);
-        $alias->alias('Reminder', Reminder::class);
-        $alias->alias('Sentinel', Sentinel::class);
+//        $this->app->register(SentinelServiceProvider::class);
+//
+//        $alias = AliasLoader::getInstance();
+//        $alias->alias('Activation', Activation::class);
+//        $alias->alias('Reminder', Reminder::class);
+//        $alias->alias('Sentinel', Sentinel::class);
     }
 
     /**
@@ -62,7 +54,7 @@ class EssenceServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['essence','auth', 'sentry'];
+        return ['essence','auth'];
     }
     
     /**
@@ -72,12 +64,9 @@ class EssenceServiceProvider extends ServiceProvider
      */
     protected function bootForConsole()
     {
-        $this->commands([
-            CountriesCommandSeeder::class,
-            MexicanTownsCommand::class,
-            StatesCommandSeeder::class,
-            MunicipalitiesCommandSeeder::class
-        ]);
+//        $this->commands([
+//
+//        ]);
         // Publishing the configuration file.
         $this->publishes([
             __DIR__.'/../config/essence.php' => config_path('essence.php'),

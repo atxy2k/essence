@@ -31,6 +31,8 @@ use Throwable;
 use Reminder;
 use Illuminate\Validation\Rule;
 use DB;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class UsersService extends Service
 {
@@ -63,16 +65,16 @@ class UsersService extends Service
             try
             {
                 DB::beginTransaction();
-                $activated      = boolval( array_get($data, 'activate', false) );
-                $asign_password = boolval( array_get($data, 'asign_password', false) );
+                $activated      = boolval( Arr::get($data, 'activate', false) );
+                $asign_password = boolval( Arr::get($data, 'asign_password', false) );
                 if ( !$asign_password )
                 {
-                    $data['password'] = strtolower(str_random(6));
+                    $data['password'] = strtolower(Str::random(6));
                 }
-                $credentials = array_only($data,['email', 'password','first_name','last_name']);
+                $credentials = Arr::only($data,['email', 'password','first_name','last_name']);
                 $user = $activated ? Sentinel::registerAndActivate($credentials) : Sentinel::register($credentials);
                 throw_if(is_null($user), UserNotCreatedException::class);
-                $user->roles()->sync(array_get($data, 'roles', []));
+                $user->roles()->sync(Arr::get($data, 'roles', []));
                 //$user->notify( !$asign_password ? new Welcome( $data['password'] ) : new Welcome() ) ;
                 if ( !$activated )
                 {
@@ -103,12 +105,12 @@ class UsersService extends Service
         $return = false;
         if ( $this->validator->with($data)->passes('login') )
         {
-            $remember = boolval(array_get($data, 'remember', false));
-            $credentials = array_only($data, [ 'email', 'password' ]);
+            $remember = boolval(Arr::get($data, 'remember', false));
+            $credentials = Arr::only($data, [ 'email', 'password' ]);
             try
             {
-                throw_if( is_null(Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email']))), UserNotFoundException::class );
-                $_user = Sentinel::getUserRepository()->findByCredentials(array_only($credentials,['email', 'password']));
+                throw_if( is_null(Sentinel::getUserRepository()->findByCredentials(Arr::only($credentials,['email']))), UserNotFoundException::class );
+                $_user = Sentinel::getUserRepository()->findByCredentials(Arr::only($credentials,['email', 'password']));
                 throw_if($_user->roles->count() === 0, DoesntHaveRolesException::class);
                 if($remember)
                     Sentinel::authenticateAndRemember($data);
@@ -133,12 +135,12 @@ class UsersService extends Service
     public function resetPassword( int $id,array $data ) : bool
     {
         $return = false;
-        $user = Sentinel::getUserRepository()->findById($id);
+        $user = $this->usersRepository->find($id);
         try {
             throw_if(is_null($user), UserNotFoundException::class);
             if ( $this->validator->with($data)->passes('reset_password') )
             {
-                Sentinel::update($user, [ 'password' => $data['password'] ]);
+                $this->usersRepository->update($user->id, [ 'password' => $data['password'] ]);
                 $return = true;
             }
         } catch (Throwable $e)
@@ -316,8 +318,8 @@ class UsersService extends Service
         $return = false;
         if ( $this->validator->with($data)->passes('update_password_from_reminder') )
         {
-            $token    = array_get($data, 'token');
-            $password = array_get($data, 'password');
+            $token    = Arr::get($data, 'token');
+            $password = Arr::get($data, 'password');
             try
             {
                 $token = decrypt($token);
@@ -432,7 +434,7 @@ class UsersService extends Service
             $this->validator->add('update', 'email',  Rule::unique('users')->ignore( $user->id ));
             if ( $this->validator->with( $data )->passes('update') )
             {
-                $updated_data = array_only($data,[ 'first_name', 'last_name', 'email']);
+                $updated_data = Arr::only($data,[ 'first_name', 'last_name', 'email']);
                 throw_unless( $this->usersRepository->update($id, $updated_data ), UserNotUpdatedException::class );
                 $return = $this->usersRepository->find($id);
             }
@@ -481,7 +483,7 @@ class UsersService extends Service
             throw_if(is_null($user), UserNotFoundException::class);
             throw_unless($user->is_admin, UserDoesNotAdminException::class);
             throw_if($this->validator->with($data)->fails('change-admin-role'), new UnexpectedException($this->validator->errors()->first()));
-            $roles		= array_get($data,'roles');
+            $roles		= Arr::get($data,'roles');
             $user->roles()->sync($roles);
             $user->save();
             $return = true;

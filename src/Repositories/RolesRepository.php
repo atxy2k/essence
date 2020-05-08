@@ -8,13 +8,13 @@
 
 use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Infraestructure\Repository;
-use Atxy2k\Essence\Traits\SluggableTrait;
+use Atxy2k\Essence\Traits\Sluggable;
 use Illuminate\Support\Collection;
 
 class RolesRepository extends Repository
 {
     protected $model = Role::class;
-    use SluggableTrait;
+    use Sluggable;
 
     public function notAdminRoles() : Collection
     {

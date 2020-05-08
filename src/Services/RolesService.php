@@ -12,10 +12,11 @@ use Atxy2k\Essence\Exceptions\Roles\RoleNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Repositories\RolesRepository;
 use Atxy2k\Essence\Validators\RolesValidator;
-use Cartalyst\Sentinel\Roles\RoleInterface;
+use Illuminate\Support\Str;
 use Throwable;
-use Sentinel;
 use DB;
+use Illuminate\Support\Arr;
+use Essence;
 
 class RolesService extends Service
 {
@@ -34,10 +35,10 @@ class RolesService extends Service
      * Update existing role
      * @param int $id
      * @param array $data
-     * @return RoleInterface|null
+     * @return Role|null
      * @throws \Exception
      */
-    public function update(int $id, array $data) : ?RoleInterface
+    public function update(int $id, array $data) : ?Role
     {
         $return = null;
         if ( $this->validator->with($data)->passes('update') )
@@ -45,7 +46,7 @@ class RolesService extends Service
             try
             {
                 \DB::beginTransaction();
-                $role = Sentinel::getRoleRepository()->findById($id);
+                $role = $this->rolesRepository->find($id);
                 throw_if(is_null($role), RoleNotFoundException::class);
                 $permissions = [];
                 foreach ( $data['routes'] as $route => $val )
@@ -53,11 +54,11 @@ class RolesService extends Service
                     $permissions[ $route ] = boolval( intval($val) );
                 }
                 $role->update([
-                    'name'  => array_get($data,'name'),
-                    'slug'  => str_slug(array_get($data,'name')),
+                    'name'  => Arr::get($data,'name'),
+                    'slug'  => Str::slug(Arr::get($data,'name')),
                     'permissions' => $permissions
                 ]);
-                $users = array_get($data,'users',[]);
+                $users = Arr::get($data,'users',[]);
                 $role->users()->sync($users);
                 $role->save();
                 $return = $role;
@@ -78,7 +79,7 @@ class RolesService extends Service
      * @return RoleInterface|null
      * @throws \Exception
      */
-    public function create(array $data) : ?RoleInterface
+    public function create(array $data) : ?Role
     {
         $return = null;
         if ( $this->validator->with($data)->passes() )
@@ -87,26 +88,27 @@ class RolesService extends Service
             {
                 DB::beginTransaction();
                 $permissions = [];
-                foreach ( array_get($data,'routes', []) as $route => $val )
+                foreach ( Arr::get($data,'routes', []) as $route => $val )
                 {
                     $permissions[ $route ] = (bool) (int) $val;
                 }
                 $role = $this->rolesRepository->create([
-                    'name'  => array_get($data,'name'),
-                    'slug'  => str_slug(array_get($data,'name')),
-                    'blocked'  => str_slug(array_get($data,'blocked', 0)),
+                    'name'  => Arr::get($data,'name'),
+                    'slug'  => Str::slug(Arr::get($data,'name')),
+                    'blocked'  => (bool) (int) (Arr::get($data,'blocked', 0)),
                     'permissions' => $permissions
                 ]);
                 throw_if(is_null($role), RoleNotCreatedException::class);
-                $users = array_get($data,'users',[]);
+                $users = Arr::get($data,'users',[]);
                 $role->users()->sync($users);
                 $return = $this->rolesRepository->find($role->id);
-                \DB::commit();
+                DB::commit();
             }
             catch (Throwable $e)
             {
-                \DB::rollBack();
+                DB::rollBack();
                 $this->pushError($e->getMessage());
+                Essence::log($e);
             }
         }
         return $return;
@@ -172,7 +174,7 @@ class RolesService extends Service
             $permissions = $current_role->permissions;
             $role = Sentinel::getRoleRepository()->createModel()->create([
                 'name'  => trim($name),
-                'slug'  => str_slug(trim($name)),
+                'slug'  => Str::slug(trim($name)),
                 'permissions' => $permissions
             ]);
             throw_if(is_null($role), RoleNotCreatedException::class);

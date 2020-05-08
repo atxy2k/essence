@@ -6,7 +6,7 @@
  * Time: 18:55
  */
 
-use Atxy2k\Essence\Eloquent\Setting;
+use Atxy2k\Essence\Eloquent\Configuration;
 use Atxy2k\Essence\Exceptions\Users\UserNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Repositories\SettingsRepository;
@@ -29,13 +29,13 @@ class SettingsService extends Service
         return $this->settingsRepository->getValue($key, $user_id);
     }
 
-    public function setOption(string $key, $value) : ?Setting
+    public function setOption(string $key, $value) : ?Configuration
     {
         return is_array($value) ? $this->settingsRepository->setEncodedValue($key, $value)
             : $this->settingsRepository->setValue($key, $value);
     }
 
-    public function setUserOption(string $key, $value) : ?Setting
+    public function setUserOption(string $key, $value) : ?Configuration
     {
         $return = false;
         try {

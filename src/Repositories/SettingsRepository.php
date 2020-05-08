@@ -6,7 +6,7 @@
  * Time: 18:02
  */
 
-use Atxy2k\Essence\Eloquent\Setting;
+use Atxy2k\Essence\Eloquent\Configuration;
 use Atxy2k\Essence\Exceptions\Essence\UnexpectedException;
 use Atxy2k\Essence\Infraestructure\Repository;
 use Throwable;
@@ -14,9 +14,9 @@ use Throwable;
 class SettingsRepository extends Repository
 {
 
-    protected $model = Setting::class;
+    protected $model = Configuration::class;
 
-    public function findByKey(string $key, int $user_id = null) : ?Setting
+    public function findByKey(string $key, int $user_id = null) : ?Configuration
     {
         return !is_null($user_id) ? $this->query->where('key', $key)->where('user_id', $user_id)->first() :
             $this->query->where('key', $key)->whereNull('user_id')->first();
@@ -34,7 +34,7 @@ class SettingsRepository extends Repository
         return $response;
     }
 
-    public function setValue(string $key, string $value = null, int $user_id = null, $encode = false) : ?Setting
+    public function setValue(string $key, string $value = null, int $user_id = null, $encode = false) : ?Configuration
     {
         $return = null;
         $current = $this->findByKey($key, $user_id);
@@ -54,7 +54,7 @@ class SettingsRepository extends Repository
         return $return;
     }
 
-    public function setEncodedValue(string $key, array $value = [], int $user_id = null) : ?Setting
+    public function setEncodedValue(string $key, array $value = [], int $user_id = null) : ?Configuration
     {
         $return = null;
         try {
