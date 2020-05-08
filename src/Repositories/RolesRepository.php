@@ -16,14 +16,5 @@ class RolesRepository extends Repository
     protected $model = Role::class;
     use Sluggable;
 
-    public function notAdminRoles() : Collection
-    {
-        return $this->query->where('slug','!=', config('essence.admin_role_slug'))->get();
-    }
 
-    public function isAdminRole(int $role_id) : bool
-    {
-        $role = $this->find($role_id);
-        return $role->slug === config('essence.admin_role_slug');
-    }
 }

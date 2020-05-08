@@ -14,7 +14,7 @@ class CreateInteractionsTable extends Migration
     public function up()
     {
         Schema::create('interactions', function (Blueprint $table) {
-            $table->bigIncrement('id');
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('interaction_id');
             $table->unsignedBigInteger('interactuable_id');
             $table->string('interactuable_type');

@@ -28,6 +28,11 @@ class TestCase extends OrchestraTest
         ];
     }
 
+    protected function getApplicationTimezone($app)
+    {
+        return 'America/Merida';
+    }
+
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('logging.default', 'stack');
@@ -43,6 +48,12 @@ class TestCase extends OrchestraTest
         ]);
         $app['config']->set('essence.admin_role_slug', 'developer');
         $app['config']->set('config.key', 'base64:+74b9J7uq7IWsUt5D8ij+dwA1nV3+I48P1WkN4tleHw=');
+    }
+
+    protected function setUp() : void
+    {
+        parent::setUp();
+        $this->artisan('migrate', [ '--database' => 'testbench' ])->run();
     }
 
 }

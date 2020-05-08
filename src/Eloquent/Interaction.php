@@ -5,7 +5,7 @@ use Atxy2k\Essence\Infraestructure\Model;
 class Interaction extends Model
 {
     protected $table = 'interactions_type';
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = ['name', 'slug', 'description'];
     protected $guarded = ['id'];
 
     public function users()

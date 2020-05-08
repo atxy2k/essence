@@ -15,9 +15,11 @@ class User extends Model
     use Interactuable;
     use Configurable;
 
-    protected $fillable = [ 'email', 'password', 'permissions', 'last_login', 'first_name', 'last_name', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'email', 'password', 'permissions',
+        'first_name', 'last_name', 'active',
+        'activated_at', 'created_at', 'updated_at'];
     protected $guarded  = [ 'id' ];
-    protected $dates    = [ 'last_login', 'created_at', 'updated_at' ];
     protected $appends  = [ 'full_name', 'is_admin', 'is_activated' ];
 
     public function getIsAdminAttribute()

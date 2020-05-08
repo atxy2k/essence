@@ -15,10 +15,10 @@ class UsersRepository extends Repository
 
     protected $model = User::class;
 
-    public function admins() : IteratorAggregate
-    {
-        $admins = Sentinel::getRoleRepository()->findBySlug(config('essence.admin_role_slug'));
-        return $admins->getUsers();
-    }
+//    public function admins() : IteratorAggregate
+//    {
+//        $admins = Sentinel::getRoleRepository()->findBySlug(config('essence.admin_role_slug'));
+//        return $admins->getUsers();
+//    }
 
 }
