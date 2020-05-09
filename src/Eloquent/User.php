@@ -21,6 +21,7 @@ class User extends Model
         'activated_at', 'created_at', 'updated_at'];
     protected $guarded  = [ 'id' ];
     protected $appends  = [ 'full_name', 'is_admin', 'is_activated' ];
+    protected $dates    = ['activated_at'];
 
     public function getIsAdminAttribute()
     {

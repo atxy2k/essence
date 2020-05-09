@@ -21,4 +21,11 @@ class UsersRepository extends Repository
 //        return $admins->getUsers();
 //    }
 
+    public function findByEmail(string $email, int $except_id = null) : ?User
+    {
+        return !is_null($except_id) ?
+            $this->query->where('email', $email)->where('id', $except_id)->first() :
+            $this->query->where('email', $email)->first();
+    }
+
 }
