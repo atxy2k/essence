@@ -16,7 +16,7 @@ use Essence;
 use DB;
 use Exception;
 
-class InteractionsTypeTypeService extends Service implements InteractionsTypeServiceInterface
+class InteractionsTypeService extends Service implements InteractionsTypeServiceInterface
 {
 
     /** @var InteractionsTypeRepository */
@@ -42,8 +42,8 @@ class InteractionsTypeTypeService extends Service implements InteractionsTypeSer
                 NameIsNotAvailableException::class);
             $data['slug'] = Str::slug($data['name']);
             $interaction = $this->interactionsRepository->create($data);
-            $return = $interaction;
             DB::commit();
+            $return = $interaction;
         }
         catch (Throwable $e)
         {

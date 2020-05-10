@@ -55,7 +55,7 @@ class RolesService extends Service implements RolesServiceInterface
         {
             $slug = Str::slug($name);
             $role = $this->rolesRepository->findBySlug($slug, $except);
-            $return = !is_null($role);
+            $return = is_null($role);
         }
         catch (Throwable $e)
         {
@@ -103,8 +103,8 @@ class RolesService extends Service implements RolesServiceInterface
             $role = $this->rolesRepository->create($data);
             throw_if(is_null($role), RoleNotCreatedException::class);
 
-            $this->interactionsService->generate('create', $role);
-
+            $interaction = $this->interactionsService->generate('create', $role);
+            throw_if(is_null($interaction), InteractionNotCreatedException::class);
             DB::commit();
             $return = $role;
         }
@@ -136,7 +136,7 @@ class RolesService extends Service implements RolesServiceInterface
         catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
-            DB::rollbacl();
+            DB::rollback();
         }
         return $return;
     }

@@ -11,7 +11,7 @@ class ConfigurationsRepository extends Repository
 {
     protected $model = Configuration::class;
 
-    public function findByKey(string $key, object $configurable = null) : Configuration
+    public function findByKey(string $key, object $configurable = null) : ?Configuration
     {
         if(!is_null($configurable))
         {

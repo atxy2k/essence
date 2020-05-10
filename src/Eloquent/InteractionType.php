@@ -10,12 +10,20 @@ class InteractionType extends Model
 
     public function users()
     {
-        return $this->morphedByMany(User::class, 'interactuable');
+        return $this->morphedByMany(User::class,
+            'interactuable',
+            'interactions',
+            'interaction_id'
+        );
     }
 
     public function roles()
     {
-        return $this->morphedByMany(Role::class, 'interactuable');
+        return $this->morphedByMany(Role::class,
+            'interactuable',
+            'interactions',
+            'interaction_id'
+        );
     }
 
 }

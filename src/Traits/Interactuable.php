@@ -10,6 +10,11 @@ trait Interactuable
 {
     public function interactions()
     {
-        return $this->morphToMany(InteractionType::class, 'interactuable');
+        return $this->morphToMany(InteractionType::class,
+            'interactuable',
+            'interactions',
+            'interactuable_id',
+            'interaction_id'
+        );
     }
 }

@@ -12,6 +12,6 @@ class InteractionNotCreatedException extends Exception
      */
     public function __construct()
     {
-        parent::__construct(__('Interaction not created exception'));
+        parent::__construct(__('Interaction not created'));
     }
 }

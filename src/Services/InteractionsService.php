@@ -15,6 +15,7 @@ use Atxy2k\Essence\Validators\InteractionsValidator;
 use Throwable;
 use Exception;
 use DB;
+use Auth;
 
 class InteractionsService extends Service
 {
@@ -41,6 +42,7 @@ class InteractionsService extends Service
             DB::beginTransaction();
             throw_unless($this->validator->with($data)->passes('create'),
                 new Exception($this->validator->errors()->first()));
+            $data['user_id'] = Auth::check() ? Auth::id() : null;
             $interaction = $this->interactionsRepository->create($data);
             DB::commit();
         }
@@ -63,7 +65,8 @@ class InteractionsService extends Service
             $interaction = $this->create([
                 'interaction_id' => $interaction_type->id,
                 'interactuable_id' => $interactuable->id,
-                'interactuable_type' => get_class($interactuable)
+                'interactuable_type' => get_class($interactuable),
+                'user_id'   => Auth::check() ? Auth::id() : null
             ]);
             throw_if(is_null($interaction), InteractionNotCreatedException::class);
             DB::commit();
