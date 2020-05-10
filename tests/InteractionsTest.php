@@ -4,9 +4,9 @@
 namespace Atxy2k\Essence\Tests;
 
 
-use Atxy2k\Essence\Eloquent\Interaction;
-use Atxy2k\Essence\Interfaces\Services\InteractionsServiceInterface;
-use Atxy2k\Essence\Services\InteractionsService;
+use Atxy2k\Essence\Eloquent\InteractionType;
+use Atxy2k\Essence\Interfaces\Services\InteractionsTypeServiceInterface;
+use Atxy2k\Essence\Services\InteractionsTypeTypeService;
 use DB;
 use Illuminate\Support\Str;
 
@@ -14,18 +14,18 @@ class InteractionsTest extends TestCase
 {
     public function testSimpleInstanceReturnInteractionsService()
     {
-        /** @var InteractionsService $service */
-        $service = $this->app->make(InteractionsService::class);
+        /** @var InteractionsTypeTypeService $service */
+        $service = $this->app->make(InteractionsTypeTypeService::class);
         $this->assertNotNull($service);
-        $this->assertInstanceOf(InteractionsService::class, $service);
-        $this->assertInstanceOf(InteractionsServiceInterface::class, $service);
+        $this->assertInstanceOf(InteractionsTypeTypeService::class, $service);
+        $this->assertInstanceOf(InteractionsTypeServiceInterface::class, $service);
     }
 
     public function testCreateWithWrongDataReturnNull()
     {
         DB::beginTransaction();
-        /** @var InteractionsService $service */
-        $service = $this->app->make(InteractionsService::class);
+        /** @var InteractionsTypeTypeService $service */
+        $service = $this->app->make(InteractionsTypeTypeService::class);
         $this->assertNull($service->create([]));
         $this->assertNull($service->create([
             'name' => 'Name without description'
@@ -36,15 +36,15 @@ class InteractionsTest extends TestCase
     public function testCreateWithRealDataReturnInteraction()
     {
         DB::beginTransaction();
-        /** @var InteractionsService $service */
-        $service = $this->app->make(InteractionsService::class);
+        /** @var InteractionsTypeTypeService $service */
+        $service = $this->app->make(InteractionsTypeTypeService::class);
         $data =[
             'name' => 'Create',
             'description' => 'Register the create interaction with one object'
         ];
         $interaction = $service->create($data);
         $this->assertNotNull($interaction, $service->errors()->first());
-        $this->assertInstanceOf(Interaction::class, $interaction);
+        $this->assertInstanceOf(InteractionType::class, $interaction);
         $this->assertEquals($data['name'], $interaction->name);
         $this->assertEquals(Str::slug($data['name']), $interaction->slug);
         $this->assertEquals($data['description'], $interaction->description);
@@ -56,15 +56,15 @@ class InteractionsTest extends TestCase
     public function testCreateWithRealDataReturnInteractionAndPreventDuplicates()
     {
         DB::beginTransaction();
-        /** @var InteractionsService $service */
-        $service = $this->app->make(InteractionsService::class);
+        /** @var InteractionsTypeTypeService $service */
+        $service = $this->app->make(InteractionsTypeTypeService::class);
         $data =[
             'name' => 'Update',
             'description' => 'Register the update interaction with one object'
         ];
         $interaction = $service->create($data);
         $this->assertNotNull($interaction, $service->errors()->first());
-        $this->assertInstanceOf(Interaction::class, $interaction);
+        $this->assertInstanceOf(InteractionType::class, $interaction);
 
         $another_interaction = $service->create($data);
         $this->assertNull($another_interaction);

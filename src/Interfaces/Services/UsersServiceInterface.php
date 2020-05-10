@@ -35,8 +35,8 @@ interface UsersServiceInterface
     function deactivate(int $user_id) : bool ;
     function update(int $user_id, array $data) : bool ;
     function delete(int $user_id) : bool ;
-    function removeAdminPrivileges(int $id, array $data);
-    function grantAdminPrivileges(int $id);
+    function removeAdminPrivileges(int $id, array $data) : bool ;
+    function grantAdminPrivileges(int $id) : bool ;
     function loginSessionWith(int $id) : bool ;
     function addRole(int $user_id, int $role_id) : bool;
     function removeRole(int $user_id, int $role_id) : bool;

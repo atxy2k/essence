@@ -10,8 +10,9 @@ class InteractionsValidator extends Validator
 {
     protected $rules = [
         'create' => [
-            'name' => 'required|unique:interactions_type,name',
-            'description' => 'required'
+            'interaction_id' => 'required|integer',
+            'interactuable_id' => 'required|integer',
+            'interactuable_type' => 'required'
         ]
     ];
 }

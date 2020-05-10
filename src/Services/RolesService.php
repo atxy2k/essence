@@ -7,10 +7,15 @@
  */
 
 use Atxy2k\Essence\Eloquent\Role;
+use Atxy2k\Essence\Eloquent\User;
+use Atxy2k\Essence\Exceptions\Essence\NameIsNotAvailableException;
+use Atxy2k\Essence\Exceptions\Interactions\InteractionNotCreatedException;
+use Atxy2k\Essence\Exceptions\Interactions\InteractionNotFoundException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotCreatedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Interfaces\Services\RolesServiceInterface;
+use Atxy2k\Essence\Repositories\InteractionsTypeRepository;
 use Atxy2k\Essence\Repositories\RolesRepository;
 use Atxy2k\Essence\Validators\RolesValidator;
 use Illuminate\Support\Str;
@@ -18,18 +23,24 @@ use Throwable;
 use DB;
 use Illuminate\Support\Arr;
 use Essence;
+use Exception;
 
 class RolesService extends Service implements RolesServiceInterface
 {
 
     /** @var RolesRepository */
     protected $rolesRepository;
+    /** @var InteractionsService */
+    protected $interactionsService;
 
-    public function __construct(RolesValidator $rolesValidator, RolesRepository $rolesRepository)
+    public function __construct(RolesValidator $rolesValidator,
+                                InteractionsService $interactionsService,
+                                RolesRepository $rolesRepository)
     {
         parent::__construct();
         $this->rolesRepository = $rolesRepository;
         $this->validator = $rolesValidator;
+        $this->interactionsService = $interactionsService;
     }
 
     /**
@@ -63,25 +74,70 @@ class RolesService extends Service implements RolesServiceInterface
         $return = false;
         try
         {
+            DB::beginTransaction();
             $role = $this->rolesRepository->find($id);
             throw_if(is_null($role), RoleNotFoundException::class);
             $role->delete();
+            DB::commit();
             $return = true;
         }
         catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
+            DB::rollback();
         }
         return $return;
     }
 
     function create(array $data): ?Role
     {
-        // TODO: Implement create() method.
+        $return = null;
+        try
+        {
+            DB::beginTransaction();
+            throw_unless($this->validator->with($data)->passes('create'),
+                new Exception($this->validator->errors()->first()));
+            throw_unless($this->rolesRepository->slugFromTextIsAvailable($data['name']),
+            NameIsNotAvailableException::class);
+            $data['slug'] = Str::slug($data['name']);
+            $role = $this->rolesRepository->create($data);
+            throw_if(is_null($role), RoleNotCreatedException::class);
+
+            $this->interactionsService->generate('create', $role);
+
+            DB::commit();
+            $return = $role;
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            DB::rollback();
+        }
+        return $return;
     }
 
-    function update(int $id, array $data): ?Role
+    function update(int $id, array $data): bool
     {
-        // TODO: Implement update() method.
+        $return = false;
+        try
+        {
+            DB::beginTransaction();
+            $role = $this->rolesRepository->find($id);
+            throw_if(is_null($role), RoleNotFoundException::class);
+            throw_unless($this->rolesRepository->slugFromTextIsAvailable($data['name'], $role->id),
+                NameIsNotAvailableException::class);
+            $data['slug'] = Str::slug($data['name']);
+            $this->rolesRepository->update($id, $data);
+
+            $this->interactionsService->generate('update', $role);
+            $return = true;
+            DB::commit();
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            DB::rollbacl();
+        }
+        return $return;
     }
 }

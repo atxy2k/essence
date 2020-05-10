@@ -28,6 +28,13 @@ class UsersValidator extends Validator
         ],
         'change-password' => [
             'password'     => 'required|confirmed|bail',
+        ],
+        'remove-admin-privileges' => [
+            'roles' => 'required|array'
+        ],
+        'update' => [
+            'first_name' => 'required',
+            'last_name'  => 'required'
         ]
     ];
 }

@@ -34,12 +34,12 @@ class ChangeEmailRequestService extends Service
 
     public function __construct(ChangeEmailRequestRepository $changeEmailRequestRepository,
                                 ChangeEmailRequestValidator $changeEmailRequestValidator,
-                                UsersRepository $usersRepository)
+                                UsersRepository $usersTypeRepository)
     {
         parent::__construct();
         $this->requestRepository = $changeEmailRequestRepository;
         $this->validator = $changeEmailRequestValidator;
-        $this->usersRepository = $usersRepository;
+        $this->usersRepository = $usersTypeRepository;
     }
 
     /**
