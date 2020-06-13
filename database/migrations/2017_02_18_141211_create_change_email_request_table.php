@@ -14,7 +14,7 @@ class CreateChangeEmailRequestTable extends Migration
     {
         Schema::create('change_email_requests', function (Blueprint $table) {
 	        $table->engine = 'InnoDB';
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->string('token_confirmation_change', 32);
             $table->string('token_confirmation_email', 32);
