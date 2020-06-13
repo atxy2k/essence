@@ -6,6 +6,7 @@
  * Time: 18:04
  */
 
+use Atxy2k\Essence\Eloquent\Interaction;
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Exceptions\EmailRequests\EmailNotAvailableException;
 use Atxy2k\Essence\Exceptions\Essence\InvalidParamsException;
@@ -88,7 +89,8 @@ class UsersService extends Service implements UsersServiceInterface
             $roles = Arr::get($data,'roles',[]);
             $user->roles()->sync($roles);
 
-            $this->interactionsService->generate('create', $user);
+            $interaction = $this->interactionsService->generate('create', $user);
+            throw_unless($interaction instanceof Interaction, InteractionNotCreatedException::class);
             $return = $this->usersRepository->find($user->id);
             DB::commit();
         }

@@ -14,9 +14,9 @@ class AddUserIdToInteractionsTable extends Migration
     public function up()
     {
         Schema::table('interactions', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
 
-            $table->foreign('user_id')->references('id')
+            $table->foreign('created_by')->references('id')
                 ->on('users')->onDelete('cascade');
         });
     }

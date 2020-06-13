@@ -11,6 +11,7 @@ use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Exceptions\Essence\NameIsNotAvailableException;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotCreatedException;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotFoundException;
+use Atxy2k\Essence\Exceptions\Roles\RoleIsBlockedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotCreatedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
@@ -60,6 +61,7 @@ class RolesService extends Service implements RolesServiceInterface
         catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
+            Essence::log($e);
         }
         return $return;
     }
@@ -77,6 +79,7 @@ class RolesService extends Service implements RolesServiceInterface
             DB::beginTransaction();
             $role = $this->rolesRepository->find($id);
             throw_if(is_null($role), RoleNotFoundException::class);
+            throw_if($role->blocked, RoleIsBlockedException::class);
             $role->delete();
             DB::commit();
             $return = true;
@@ -85,6 +88,7 @@ class RolesService extends Service implements RolesServiceInterface
         {
             $this->pushError($e->getMessage());
             DB::rollback();
+            Essence::log($e);
         }
         return $return;
     }
@@ -112,6 +116,7 @@ class RolesService extends Service implements RolesServiceInterface
         {
             $this->pushError($e->getMessage());
             DB::rollback();
+            Essence::log($e);
         }
         return $return;
     }
@@ -126,10 +131,12 @@ class RolesService extends Service implements RolesServiceInterface
             throw_if(is_null($role), RoleNotFoundException::class);
             throw_unless($this->rolesRepository->slugFromTextIsAvailable($data['name'], $role->id),
                 NameIsNotAvailableException::class);
+            throw_if($role->blocked, RoleIsBlockedException::class);
             $data['slug'] = Str::slug($data['name']);
             $this->rolesRepository->update($id, $data);
 
-            $this->interactionsService->generate('update', $role);
+            $interaction = $this->interactionsService->generate('update', $role);
+            throw_if(is_null($interaction), InteractionNotCreatedException::class);
             $return = true;
             DB::commit();
         }
@@ -137,7 +144,9 @@ class RolesService extends Service implements RolesServiceInterface
         {
             $this->pushError($e->getMessage());
             DB::rollback();
+            Essence::log($e);
         }
         return $return;
     }
+
 }
