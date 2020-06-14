@@ -24,4 +24,9 @@ class Role extends Model
         return $this->belongsToMany(User::class, 'user_roles');
     }
 
+    public function claims()
+    {
+        return $this->belongsToMany(Claim::class, 'role_claims');
+    }
+
 }

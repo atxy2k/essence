@@ -48,4 +48,9 @@ class User extends Model
         return $this->belongsToMany(Role::class, 'user_roles');
     }
 
+    public function claims()
+    {
+        return $this->belongsToMany(Claim::class, 'user_claims');
+    }
+
 }
