@@ -114,6 +114,7 @@ class RolesService extends Service implements RolesServiceInterface
             throw_unless($this->rolesRepository->slugFromTextIsAvailable($data['name']),
             NameIsNotAvailableException::class);
             $data['slug'] = Str::slug($data['name']);
+            $data['blocked'] = Arr::get($data,'blocked', false);
             $role = $this->rolesRepository->create($data);
             throw_if(is_null($role), RoleNotCreatedException::class);
 
@@ -143,6 +144,7 @@ class RolesService extends Service implements RolesServiceInterface
                 NameIsNotAvailableException::class);
             throw_if($role->blocked, RoleIsBlockedException::class);
             $data['slug'] = Str::slug($data['name']);
+            $data['blocked'] = Arr::get($data,'blocked', $role->blocked );
             $this->rolesRepository->update($id, $data);
 
             $interaction = $this->interactionsService->generate('update', $role);

@@ -80,6 +80,12 @@ class RolesTest extends TestCase
         $this->assertEquals($role->slug, Str::slug($role_data['name']));
         $this->assertNotNull($role->created_at);
         $this->assertNotNull($role->updated_at);
+        $this->assertFalse($role->blocked);
+
+        $another_role_data = [
+            'name' => 'Superadministrator',
+            'blocked' => true
+        ];
 
         $this->assertFalse($service->checkNameAvailability($role_data['name']));
 
@@ -111,6 +117,17 @@ class RolesTest extends TestCase
          ******************************************************/
         $duplicated_role = $service->create($role_data);
         $this->assertNull($duplicated_role);
+
+        $another_role = $service->create($another_role_data);
+        $this->assertNotNull($another_role, $service->errors()->first());
+        $this->assertInstanceOf(Role::class, $another_role);
+        $this->assertEquals($another_role->name, $another_role_data['name']);
+        $this->assertEquals($another_role->slug, Str::slug($another_role_data['name']));
+        $this->assertNotNull($another_role->created_at);
+        $this->assertNotNull($another_role->updated_at);
+        $this->assertTrue($another_role->blocked);
+
+
         DB::rollback();
     }
 
