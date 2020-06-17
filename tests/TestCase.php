@@ -35,6 +35,7 @@ class TestCase extends OrchestraTest
 
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('app.key', 'base64:zQYJdPhBgACWDjjOIdUiBsQq6z07GzX6BfFvzPiijaM=');
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('logging.default', 'stack');
         $app['config']->set('logging.channels.single.path', __DIR__.'/../logs/laravel.log');

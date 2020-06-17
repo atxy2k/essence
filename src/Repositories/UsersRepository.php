@@ -21,7 +21,7 @@ class UsersRepository extends Repository
         return !is_null($except_id) ?
             $this->query
                 ->where('email', $email)
-                ->where('id', $except_id)->first() :
+                ->where('id', '!=',$except_id)->first() :
             $this->query
                 ->where('email', $email)->first();
     }

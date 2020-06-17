@@ -18,6 +18,9 @@ use Atxy2k\Essence\Exceptions\Interactions\InteractionNotFoundException;
 use Atxy2k\Essence\Exceptions\Roles\AdminRoleNotFound;
 use Atxy2k\Essence\Exceptions\Roles\IntegerOrStringRequiredException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotFoundException;
+use Atxy2k\Essence\Exceptions\Users\AdminRoleCannotBeAddedFromAddRoleFunction;
+use Atxy2k\Essence\Exceptions\Users\CannotAddRolesToAdminUser;
+use Atxy2k\Essence\Exceptions\Users\CannotRemoveAdminRoleToUserAdmin;
 use Atxy2k\Essence\Exceptions\Users\InconsistentTokenException;
 use Atxy2k\Essence\Exceptions\Users\IncorrectPasswordException;
 use Atxy2k\Essence\Exceptions\Users\TokenExpiredException;
@@ -181,8 +184,8 @@ class UsersService extends Service implements UsersServiceInterface
             throw_if(is_null($user), UserNotFoundException::class);
             throw_unless($this->validator->with($data)->passes('reset-password'),
                 new Exception($this->validator->errors()->first()));
-            $old_password = Hash::make(Arr::get($data,'old_password'));
-            throw_unless($old_password === $user->password,
+            $old_password = $data['old_password'];
+            throw_unless(Hash::check($old_password, $user->password),
                 IncorrectPasswordException::class);
             $new_password = Hash::make(trim(Arr::get($data,'password')));
             $user->password = $new_password;
@@ -341,7 +344,8 @@ class UsersService extends Service implements UsersServiceInterface
             $role = $this->rolesRepository->findBySlug(config('essence.admin_role_slug','developer'));
             throw_if(is_null($role), AdminRoleNotFound::class);
             $user->roles()->detach();
-            $user->roles()->attach($role->id);
+            throw_if(in_array($role->id, $data), new Exception('Admin role is the list'));
+            $user->roles()->sync($data);
             DB::commit();
             $completed = true;
         }
@@ -406,7 +410,12 @@ class UsersService extends Service implements UsersServiceInterface
             $role = $this->rolesRepository->find($role_id);
             throw_if(is_null($user), UserNotFoundException::class);
             throw_if(is_null($role), RoleNotFoundException::class);
-            throw_if(in_array($role->id, $user->roles()->pluck('roles.id')->all()),
+
+            $admin_role = $this->rolesRepository->findBySlug(config('essence.admin_role_slug', 'developer'));
+            throw_if(is_null($admin_role), AdminRoleNotFound::class);
+            throw_if($admin_role->id === $role->id, AdminRoleCannotBeAddedFromAddRoleFunction::class);
+            throw_if($user->is_admin, CannotAddRolesToAdminUser::class);
+            throw_if($user->roles->contains($role),
                 UserAlreadyInRoleException::class);
             $user->roles()->attach($role->id);
             DB::commit();
@@ -431,7 +440,8 @@ class UsersService extends Service implements UsersServiceInterface
             $role = $this->rolesRepository->find($role_id);
             throw_if(is_null($user), UserNotFoundException::class);
             throw_if(is_null($role), RoleNotFoundException::class);
-            throw_if(!in_array($role->id, $user->roles()->pluck('roles.id')->all()),
+            throw_if($user->is_admin, CannotRemoveAdminRoleToUserAdmin::class);
+            throw_if(!$user->roles->contains($role),
                 UserDoesntHaveRoleException::class);
             $user->roles()->detach($role->id);
             DB::commit();
@@ -455,8 +465,8 @@ class UsersService extends Service implements UsersServiceInterface
             $user = $this->usersRepository->find($user_id);
             throw_if(is_null($user), UserNotFoundException::class);
             $user->roles()->sync($roles);
-            $completed = true;
             DB::commit();
+            $completed = true;
         }
         catch (Throwable $e)
         {
@@ -561,7 +571,7 @@ class UsersService extends Service implements UsersServiceInterface
         return $return;
     }
 
-    function requestPasswordRecovery(array $data): string
+    function requestPasswordRecovery(array $data): ?string
     {
         $return = null;
         try
@@ -588,7 +598,7 @@ class UsersService extends Service implements UsersServiceInterface
 
     function validateRequestPasswordRecovery(string $data): bool
     {
-        $return = null;
+        $return = false;
         try
         {
             $encoded_data = decrypt($data);

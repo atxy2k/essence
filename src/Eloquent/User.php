@@ -33,7 +33,9 @@ class User extends Authenticable
 
     public function getIsAdminAttribute()
     {
-        return false;
+        $admin_role = config('essence.admin_role_slug', 'developer');
+        $user_roles = $this->roles()->pluck('roles.slug')->all();
+        return in_array($admin_role, $user_roles);
     }
 
     public function getFullNameAttribute() : string
