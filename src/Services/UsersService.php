@@ -28,6 +28,7 @@ use Atxy2k\Essence\Exceptions\Users\UserAlreadyIsAdminException;
 use Atxy2k\Essence\Exceptions\Users\UserDoesNotAdminException;
 use Atxy2k\Essence\Exceptions\Users\UserDoesNotHaveClaimException;
 use Atxy2k\Essence\Exceptions\Users\UserDoesntHaveRoleException;
+use Atxy2k\Essence\Exceptions\Users\UserIsNotActivatedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotActiveException;
 use Atxy2k\Essence\Exceptions\Users\UserNotCreatedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotFoundException;
@@ -86,14 +87,14 @@ class UsersService extends Service implements UsersServiceInterface
                 new Exception($this->validator->errors()->first()));
             throw_unless($this->checkEmailAvailability($data['email']), EmailNotAvailableException::class);
             $activated = (bool) (int) Arr::get($data, 'activate', false);
-            $user_credentials = Arr::only($data, [
+            $user_credentials = [
                 'first_name' => Arr::get($data,'first_name'),
                 'last_name'  => Arr::get($data,'last_name'),
                 'email'      => strtolower(trim( Arr::get($data, 'email'))),
                 'password'   => Hash::make(trim(Arr::get($data,'password'))),
                 'active'     => $activated,
                 'activated_at' => $activated ? date('Y-m-d H:i:s') : null,
-            ]);
+            ];
             $user = $this->usersRepository->create($user_credentials);
             throw_if(is_null($user), UserNotCreatedException::class);
             $roles = Arr::get($data,'roles',[]);
@@ -119,17 +120,17 @@ class UsersService extends Service implements UsersServiceInterface
         try
         {
             throw_unless($this->validator->with($data)->passes('authenticate'),
-            new ValidationException($this->validator->errors()->first()));
+                new ValidationException($this->validator->errors()->first()));
             $email = strtolower(trim($data['email']));
             $user = $this->usersRepository->findByEmail($email);
             throw_if(is_null($user), UserNotFoundException::class);
-            $compare_password = Hash::make(trim($data['password']));
-            throw_unless($user->password === $compare_password,
+            $pass = trim($data['password']);
+            throw_unless(Hash::check($pass, $user->password),
                 IncorrectPasswordException::class);
-            throw_unless($user->is_active, UserNotActiveException::class);
+            throw_unless($user->active, UserNotActiveException::class);
             $interaction = $this->interactionsService->generate(Interactions::LOGIN, $user);
             throw_unless($interaction instanceof Interaction, InteractionNotCreatedException::class);
-            if(Auth::attempt([ 'email' => $email, 'password' => $data['password'], 'is_activated' => true ]))
+            if(Auth::attempt([ 'email' => $email, 'password' => $data['password'], 'active' => true ]))
             {
                $return = true;
             }
@@ -137,7 +138,6 @@ class UsersService extends Service implements UsersServiceInterface
         catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
-            DB::rollback();
             Essence::log($e);
         }
         return $return;
@@ -152,8 +152,7 @@ class UsersService extends Service implements UsersServiceInterface
                 new Exception($this->validator->errors()->first()));
             $user = $this->usersRepository->findByEmail($data['email']);
             throw_if(is_null($user), UserNotFoundException::class);
-            $compare_password = Hash::make(trim($data['password']));
-            throw_unless($user->password === $compare_password,
+            throw_unless(Hash::check(trim($data['password']), $user->password),
                 IncorrectPasswordException::class);
             $interaction = $this->interactionsService->generate(Interactions::AUTHENTICATE, $user);
             throw_unless($interaction instanceof Interaction, InteractionNotCreatedException::class);
@@ -233,7 +232,7 @@ class UsersService extends Service implements UsersServiceInterface
 
     function checkEmailAvailability(string $email, int $except_id = null): bool
     {
-        return $this->usersRepository->findByEmail($email, $except_id) != null;
+        return $this->usersRepository->findByEmail($email, $except_id) == null;
     }
 
     function activate(int $user_id): bool
@@ -338,7 +337,7 @@ class UsersService extends Service implements UsersServiceInterface
             DB::beginTransaction();
             $user = $this->usersRepository->find($id);
             throw_if(is_null($user), UserNotFoundException::class);
-            throw_if(!$user->is_adin, UserDoesNotAdminException::class);
+            throw_if(!$user->is_admin, UserDoesNotAdminException::class);
             $role = $this->rolesRepository->findBySlug(config('essence.admin_role_slug','developer'));
             throw_if(is_null($role), AdminRoleNotFound::class);
             $user->roles()->detach();

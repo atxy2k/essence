@@ -16,11 +16,14 @@ class UsersRepository extends Repository
 
     protected $model = User::class;
 
-    public function findByEmail(string $email, int $except_id = null) : ?User
+    public function findByEmail(string $email, $except_id = null) : ?User
     {
         return !is_null($except_id) ?
-            $this->query->where('email', $email)->where('id', $except_id)->first() :
-            $this->query->where('email', $email)->first();
+            $this->query
+                ->where('email', $email)
+                ->where('id', $except_id)->first() :
+            $this->query
+                ->where('email', $email)->first();
     }
 
     public function claims(int $user_id) : Collection
