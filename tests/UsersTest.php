@@ -7,6 +7,7 @@ use Atxy2k\Essence\Constants\Interactions;
 use Atxy2k\Essence\Eloquent\InteractionType;
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Repositories\UsersRepository;
+use Atxy2k\Essence\Services\ClaimsService;
 use Atxy2k\Essence\Services\InteractionsTypeService;
 use Atxy2k\Essence\Services\RolesService;
 use Atxy2k\Essence\Services\UsersService;
@@ -774,6 +775,107 @@ class UsersTest extends TestCase
         $user = $usersRepository->find($item->id);
         $this->assertEquals(3, $user->roles->count());
 
+        DB::rollback();
+    }
+
+    public function testAddAndRemoveClaim()
+    {
+        DB::beginTransaction();
+        /** @var RolesService $rolesService */
+        $rolesService = $this->app->make(RolesService::class);
+        /** @var UsersService $service */
+        $service = $this->app->make(UsersService::class);
+        /** @var InteractionsTypeService $interactionTypeService */
+        $interactionTypeService = $this->app->make(InteractionsTypeService::class);
+        /** @var UsersRepository $usersRepository */
+        $usersRepository = $this->app->make(UsersRepository::class);
+
+        /** @var ClaimsService $claimsService */
+        $claimsService = $this->app->make(ClaimsService::class);
+
+        $interaction_create_type = $interactionTypeService->create([
+            'name' => 'create',
+            'description' => 'Create element'
+        ]);
+        $this->assertNotNull($interaction_create_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class, $interaction_create_type);
+
+        $interaction_activate_type = $interactionTypeService->create([
+            'name' => Interactions::ACTIVATE,
+            'description' => 'Activat element'
+        ]);
+        $this->assertNotNull($interaction_activate_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class,$interaction_activate_type);
+
+        $interaction_deactivate_type = $interactionTypeService->create([
+            'name' => Interactions::DEACTIVATE,
+            'description' => 'Activat element'
+        ]);
+        $this->assertNotNull($interaction_deactivate_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class,$interaction_deactivate_type);
+
+        $role_data = [
+            'name' => 'Developer'
+        ];
+        $role = $rolesService->create($role_data);
+        $this->assertNotNull($role, $rolesService->errors()->first());
+
+        $standard_role_data = [
+            'name' => 'Standard'
+        ];
+        $standard_role = $rolesService->create($standard_role_data);
+        $this->assertNotNull($standard_role, $rolesService->errors()->first());
+
+        $aux_role_data = [
+            'name' => 'Aux'
+        ];
+        $aux_role = $rolesService->create($aux_role_data);
+        $this->assertNotNull($aux_role, $rolesService->errors()->first());
+
+        $data = [
+            'first_name' => 'ivan',
+            'last_name'  => 'alvarado',
+            'email'      => 'dev@serprogramador.es',
+            'email_confirmation'      => 'dev@serprogramador.es',
+            'password'   => 'passwd',
+            'password_confirmation'   => 'passwd',
+            'roles' => [$role->id],
+        ];
+
+        $item = $service->register($data);
+        $this->assertNotNull($item, json_encode($service->errors()));
+        $this->assertInstanceOf(User::class, $item);
+
+        $claims = [
+            ['name' => 'user add', 'identifier' => 'users.add'],
+            ['name' => 'user edit','identifier' => 'users.edit'],
+            ['name' => 'user index','identifier' => 'users.index'],
+            ['name' => 'user list','identifier' => 'users.list'],
+        ];
+        $registered = [];
+        foreach ($claims as $claim)
+        {
+            $claim_item = $claimsService->create($claim);
+            $this->assertNotNull($claim_item);
+            $this->assertTrue($service->addClaim($item->id, [$claim_item->id]));
+            $registered[] = $claim_item;
+        }
+        $user = $usersRepository->find($item->id);
+        $this->assertEquals(4, $user->claims->count());
+
+        $service->removeClaim($user->id, [$registered[0]->id, $registered[1]->id]);
+        $user = $usersRepository->find($item->id);
+        $this->assertEquals(2, $user->claims->count());
+
+        $claims_for_sync = [];
+        foreach ($registered as $r)
+        {
+            $claims_for_sync[] = $r->id;
+        }
+        $service->syncClaims($user->id, $claims_for_sync);
+
+        $user = $usersRepository->find($item->id);
+        $this->assertEquals(4, $user->claims->count());
         DB::rollback();
     }
 

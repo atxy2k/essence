@@ -124,7 +124,20 @@ interface UsersServiceInterface
      */
     function syncRoles(int $user_id, array $roles = []) : bool ;
 
+    /**
+     * Add claims to user
+     * @param int $user_id
+     * @param array $claims
+     * @return bool
+     */
     function addClaim(int $user_id,array $claims) : bool ;
+
+    /**
+     * Remove claims from user
+     * @param int $user_id
+     * @param array $claims
+     * @return bool
+     */
     function removeClaim(int $user_id,array $claims) : bool ;
     function syncClaims(int $user_id, array $claims) : bool ;
 

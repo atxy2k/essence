@@ -503,6 +503,7 @@ class UsersService extends Service implements UsersServiceInterface
                 $user->claims()->attach($claim->id);
             }
             DB::commit();
+            $return = true;
         }
         catch (Throwable $e)
         {
