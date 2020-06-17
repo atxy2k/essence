@@ -6,6 +6,7 @@
  * Time: 12:43
  */
 
+use Atxy2k\Essence\Constants\Interactions;
 use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Exceptions\Claims\ClaimNotFoundException;
@@ -118,7 +119,7 @@ class RolesService extends Service implements RolesServiceInterface
             $role = $this->rolesRepository->create($data);
             throw_if(is_null($role), RoleNotCreatedException::class);
 
-            $interaction = $this->interactionsService->generate('create', $role);
+            $interaction = $this->interactionsService->generate(Interactions::CREATE, $role);
             throw_if(is_null($interaction), InteractionNotCreatedException::class);
             DB::commit();
             $return = $role;
@@ -147,7 +148,7 @@ class RolesService extends Service implements RolesServiceInterface
             $data['blocked'] = Arr::get($data,'blocked', $role->blocked );
             $this->rolesRepository->update($id, $data);
 
-            $interaction = $this->interactionsService->generate('update', $role);
+            $interaction = $this->interactionsService->generate(Interactions::UPDATE, $role);
             throw_if(is_null($interaction), InteractionNotCreatedException::class);
             $return = true;
             DB::commit();

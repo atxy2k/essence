@@ -15,8 +15,7 @@ class UsersValidator extends Validator
             'last_name'     => 'required|string|bail',
             'email'         => 'required|string|email|confirmed|unique:users,email|bail',
             'password'      => 'required_if:asign_password,1|confirmed|bail',
-            'roles'         => 'required|array|bail',
-            'set_password'  => 'required_with:password'
+            'roles'         => 'required|array|bail'
         ],
         'authenticate' => [
             'email' => 'required',
@@ -35,6 +34,13 @@ class UsersValidator extends Validator
         'update' => [
             'first_name' => 'required',
             'last_name'  => 'required'
+        ],
+        'request-password-recovery' => [
+            'email' => 'required'
+        ],
+        'encoded-password-recovery-token' => [
+            'email' => 'required',
+            'date'  => 'required'
         ]
     ];
 }
