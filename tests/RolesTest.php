@@ -4,6 +4,7 @@
 namespace Atxy2k\Essence\Tests;
 
 
+use Atxy2k\Essence\Constants\Interactions;
 use Atxy2k\Essence\Eloquent\Interaction;
 use Atxy2k\Essence\Eloquent\InteractionType;
 use Atxy2k\Essence\Eloquent\Role;
@@ -11,8 +12,11 @@ use Atxy2k\Essence\Interfaces\Services\RolesServiceInterface;
 use Atxy2k\Essence\Repositories\InteractionsRepository;
 use Atxy2k\Essence\Repositories\InteractionsTypeRepository;
 use Atxy2k\Essence\Repositories\RolesRepository;
+use Atxy2k\Essence\Repositories\UsersRepository;
+use Atxy2k\Essence\Services\ClaimsService;
 use Atxy2k\Essence\Services\InteractionsTypeService;
 use Atxy2k\Essence\Services\RolesService;
+use Atxy2k\Essence\Services\UsersService;
 use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -261,6 +265,83 @@ class RolesTest extends TestCase
 
         $deleting_blocked_item_return_false = $service->delete($standard_role->id);
         $this->assertFalse($deleting_blocked_item_return_false);
+
+        DB::rollback();
+    }
+
+    public function testAddAndRemoveClaim()
+    {
+        DB::beginTransaction();
+        /** @var RolesService $rolesService */
+        $rolesService = $this->app->make(RolesService::class);
+        /** @var UsersService $service */
+        $service = $this->app->make(UsersService::class);
+        /** @var InteractionsTypeService $interactionTypeService */
+        $interactionTypeService = $this->app->make(InteractionsTypeService::class);
+        /** @var RolesRepository $rolesRepository */
+        $rolesRepository = $this->app->make(RolesRepository::class);
+
+        /** @var ClaimsService $claimsService */
+        $claimsService = $this->app->make(ClaimsService::class);
+
+        $interaction_create_type = $interactionTypeService->create([
+            'name' => 'create',
+            'description' => 'Create element'
+        ]);
+        $this->assertNotNull($interaction_create_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class, $interaction_create_type);
+
+        $interaction_activate_type = $interactionTypeService->create([
+            'name' => Interactions::ACTIVATE,
+            'description' => 'Activat element'
+        ]);
+        $this->assertNotNull($interaction_activate_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class,$interaction_activate_type);
+
+        $interaction_deactivate_type = $interactionTypeService->create([
+            'name' => Interactions::DEACTIVATE,
+            'description' => 'Activat element'
+        ]);
+        $this->assertNotNull($interaction_deactivate_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class,$interaction_deactivate_type);
+
+        $role_data = [
+            'name' => 'Developer'
+        ];
+        $role = $rolesService->create($role_data);
+        $this->assertNotNull($role, $rolesService->errors()->first());
+
+        $claims = [
+            ['name' => 'user add', 'identifier' => 'users.add'],
+            ['name' => 'user edit','identifier' => 'users.edit'],
+            ['name' => 'user index','identifier' => 'users.index'],
+            ['name' => 'user list','identifier' => 'users.list'],
+        ];
+        $registered = [];
+        foreach ($claims as $claim)
+        {
+            $claim_item = $claimsService->create($claim);
+            $this->assertNotNull($claim_item);
+            $this->assertTrue($rolesService->addClaim($role->id, [$claim_item->id]));
+            $registered[] = $claim_item;
+        }
+
+        $role = $rolesRepository->find($role->id);
+        $this->assertEquals(4, $role->claims->count());
+
+        $rolesService->removeClaim($role->id, [$registered[0]->id, $registered[1]->id]);
+        $role = $rolesRepository->find($role->id);
+        $this->assertEquals(2,$role->claims->count());
+
+        $claims_for_sync = [];
+        foreach ($registered as $r)
+        {
+            $claims_for_sync[] = $r->id;
+        }
+        $rolesService->syncClaims($role->id, $claims_for_sync);
+
+        $role = $rolesRepository->find($role->id);
+        $this->assertEquals(4, $role->claims->count());
 
         DB::rollback();
     }

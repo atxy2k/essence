@@ -199,7 +199,7 @@ class RolesService extends Service implements RolesServiceInterface
         return $return;
     }
 
-    function removeClaim(int $role_id, int $claims): bool
+    function removeClaim(int $role_id, array $claims): bool
     {
         $return = false;
         try
