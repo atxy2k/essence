@@ -1,7 +1,4 @@
-<?php
-
-
-namespace Atxy2k\Essence\Exceptions\Claims;
+<?php namespace Atxy2k\Essence\Exceptions\Claims;
 
 use Exception;
 class ClaimAlreadyDisabledException extends Exception

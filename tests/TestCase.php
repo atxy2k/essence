@@ -8,6 +8,7 @@
 use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\EssenceServiceProvider;
+use Atxy2k\Essence\JsonWebTokens\JsonWebToken;
 use Orchestra\Testbench\TestCase as OrchestraTest;
 use Atxy2k\Essence\Facades\Essence;
 
@@ -25,6 +26,7 @@ class TestCase extends OrchestraTest
     {
         return [
             'Essence' => Essence::class,
+            'Jwt'     => JsonWebToken::class
         ];
     }
 
@@ -36,6 +38,7 @@ class TestCase extends OrchestraTest
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('app.key', 'base64:zQYJdPhBgACWDjjOIdUiBsQq6z07GzX6BfFvzPiijaM=');
+        $app['config']->set('app.url', 'http://essence.test');
         $app['config']->set('auth.providers.users.model', User::class);
         $app['config']->set('logging.default', 'stack');
         $app['config']->set('logging.channels.single.path', __DIR__.'/../logs/laravel.log');
@@ -49,7 +52,7 @@ class TestCase extends OrchestraTest
             'port'      => '3306',
         ]);
         $app['config']->set('essence.admin_role_slug', 'developer');
-        $app['config']->set('config.key', 'base64:+74b9J7uq7IWsUt5D8ij+dwA1nV3+I48P1WkN4tleHw=');
+        //$app['config']->set('config.key', 'base64:+74b9J7uq7IWsUt5D8ij+dwA1nV3+I48P1WkN4tleHw=');
     }
 
     protected function setUp() : void
