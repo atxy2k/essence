@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class Device extends Model
 {
-    protected $incrementing = false;
+    public $incrementing = false;
     protected $keyType = 'string';
     protected $fillable = [
         'identifier',

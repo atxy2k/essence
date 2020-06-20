@@ -13,6 +13,7 @@ class CreateDevicesTable extends Migration
      */
     public function up()
     {
+
         Schema::create('devices', function (Blueprint $table) {
             $table->uuid('identifier')->primary();
             $table->string('label');
@@ -42,25 +43,25 @@ class CreateDevicesTable extends Migration
             $table->string('longitude');
             $table->timestamps();
 
-            $table->foreign('identifier')->references('identifier')
+            $table->foreign('device_id')->references('identifier')
                 ->on('devices')->onDelete('cascade');
         });
 
         Schema::create('devices_access_history', function(Blueprint $table){
             $table->increments('id');
-            $table->unsignedInteger('user_id')->nullable();
-            $table->unsignedInteger('device_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->uuid('device_id');
             $table->dateTime('old_access');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('device_id')->references('id')->on('devices')->onDelete('cascade');
+            $table->foreign('device_id')->references('identifier')->on('devices')->onDelete('cascade');
         });
 
         Schema::create('authorized_apps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('device_id');
-            $table->unsignedInteger('application_id');
+            $table->unsignedBigInteger('application_id');
             $table->timestamps();
 
             $table->foreign('device_id')->references('identifier')->on('devices')->onDelete('cascade');
@@ -76,6 +77,7 @@ class CreateDevicesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('authorized_apps');
         Schema::dropIfExists('devices_access_history');
         Schema::dropIfExists('device_location_history');
         Schema::dropIfExists('devices');

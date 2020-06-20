@@ -6,9 +6,9 @@ namespace Atxy2k\Essence\Repositories;
 
 use Atxy2k\Essence\Eloquent\Application;
 use Atxy2k\Essence\Infraestructure\Repository;
-use Atxy2k\Essence\Interfaces\Repositories\ApplicationRepositoryInterface;
+use Atxy2k\Essence\Interfaces\Repositories\ApplicationsRepositoryInterface;
 
-class ApplicationsRepository extends Repository implements ApplicationRepositoryInterface
+class ApplicationsRepository extends Repository implements ApplicationsRepositoryInterface
 {
     protected $model = Application::class;
 
