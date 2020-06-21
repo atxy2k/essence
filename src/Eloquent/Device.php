@@ -11,6 +11,7 @@ class Device extends Model
 {
     public $incrementing = false;
     protected $keyType = 'string';
+    protected $primaryKey = 'identifier';
     protected $fillable = [
         'identifier',
         'label',
@@ -48,7 +49,10 @@ class Device extends Model
     {
         parent::boot();
         static::creating(function ($instance) {
-            $instance->identifier = Str::uuid();
+            if(is_null($instance->identifier))
+            {
+                $instance->identifier = Str::uuid();
+            }
         });
     }
 

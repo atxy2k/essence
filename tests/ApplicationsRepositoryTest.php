@@ -38,6 +38,7 @@ class ApplicationsRepositoryTest extends TestCase
         $applicationsRepository = App::make(ApplicationsRepository::class);
         $data = ['name' => sprintf('App %s', uniqid()), 'description' => 'Application test'];
         $app = $applicationsService->create($data);
+        $this->assertNotNull($app, $applicationsService->errors()->first());
         $existent_app = $applicationsRepository->findByAppId($app->app_id);
         $this->assertNotNull($existent_app);
         $this->assertInstanceOf(Application::class, $existent_app);

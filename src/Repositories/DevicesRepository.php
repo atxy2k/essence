@@ -4,6 +4,7 @@
 namespace Atxy2k\Essence\Repositories;
 
 use Atxy2k\Essence\Eloquent\Device;
+use Atxy2k\Essence\Exceptions\Applications\DeviceNotFoundException;
 use Atxy2k\Essence\Infraestructure\Repository;
 use Exception;
 use Illuminate\Support\Collection;
@@ -19,13 +20,13 @@ class DevicesRepository extends Repository
             ->where('identifier', $identifier )->first();
     }
 
-    public function updateLastConnection(int $id) : bool
+    public function updateLastConnection(string $id) : bool
     {
         $return = false;
         try
         {
-            $element =  $this->query->where('id', $id)->first();
-            throw_if(is_null($element), new Exception(__('Device not found!')));
+            $element =  $this->query->where('identifier', $id)->first();
+            throw_if(is_null($element), DeviceNotFoundException::class);
             $element->last_connection = date('Y-m-d H:i:s');
             $element->save();
             $return = true;

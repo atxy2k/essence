@@ -41,6 +41,7 @@ class CreateDevicesTable extends Migration
             $table->uuid('device_id')->nullable();
             $table->string('latitude');
             $table->string('longitude');
+            $table->dateTime('date')->nullable();
             $table->timestamps();
 
             $table->foreign('device_id')->references('identifier')
@@ -51,11 +52,14 @@ class CreateDevicesTable extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->uuid('device_id');
-            $table->dateTime('old_access');
+            $table->dateTime('old_access')->nullable();
+            $table->unsignedBigInteger('device_location_history_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('device_id')->references('identifier')->on('devices')->onDelete('cascade');
+            $table->foreign('device_location_history_id')->references('id')->on('device_location_history')
+                ->onDelete('set null');
         });
 
         Schema::create('authorized_apps', function (Blueprint $table) {

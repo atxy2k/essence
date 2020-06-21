@@ -46,9 +46,9 @@ class ApplicationsService extends Service
             DB::beginTransaction();
             throw_unless($this->validator->with($data)->passes('create'),
                 new ValidationException($this->validator->errors()->first()) );
-            $data['label'] = $data['name'];
             $data['app_id'] = strtoupper(uniqid());
             $data['app_secret'] = Str::uuid()->toString();
+            $data['description'] = Arr::get($data,'description','');
             $item = $this->repository->create($data);
             throw_if(is_null($item), UnexpectedException::class);
             DB::commit();
