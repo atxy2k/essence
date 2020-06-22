@@ -58,6 +58,8 @@ class DevicesService extends Service
             $existing = $this->devicesRepository->findByIdentifier($data['identifier']);
             if( is_null($existing) )
             {
+                $autoactivated_devices = config('essence.auto_activate', []);
+                $data['enabled'] = in_array($data['type'], $autoactivated_devices);
                 $data['last_connection'] = date('Y-m-d H:i:s');
                 $data['label'] = Arr::get($data,'label', $data['name'] );
                 $data['user_id'] = null;
@@ -71,7 +73,6 @@ class DevicesService extends Service
             }
             else
             {
-                logger('ya existia');
                 $existing->last_connection = date('Y-m-d H:i:s');
                 $existing->save();
                 $return = $existing;

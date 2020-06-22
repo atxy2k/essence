@@ -14,6 +14,7 @@ class Device extends Model
     protected $primaryKey = 'identifier';
     protected $fillable = [
         'identifier',
+        'type',
         'label',
         'name',
         'last_connection',
@@ -41,7 +42,8 @@ class Device extends Model
         'indexed_db' => 'boolean',
         'open_database' => 'boolean',
         'cpu_class' => 'boolean',
-        'enabled'   => 'boolean'
+        'enabled'   => 'boolean',
+        'type'      => 'integer'
     ];
     protected $dates = ['last_connection'];
 

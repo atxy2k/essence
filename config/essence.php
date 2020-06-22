@@ -1,4 +1,6 @@
 <?php
+
+use Atxy2k\Essence\Constants\DeviceTypes;
 use Atxy2k\Essence\Constants\Environment;
 
 return [
@@ -6,5 +8,11 @@ return [
     /**
      * Password recovery timeout
      */
-    'password_recovery_timeout' => env(Environment::RECOVERY_PASSWORD_TIMEOUT, 30)
+    'password_recovery_timeout' => env(Environment::RECOVERY_PASSWORD_TIMEOUT, 30),
+    /**
+     * Auto activate device's types.
+     */
+    'auto_activate' => [
+        DeviceTypes::BROWSER
+    ]
 ];

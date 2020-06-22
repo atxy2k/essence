@@ -16,6 +16,7 @@ class CreateDevicesTable extends Migration
 
         Schema::create('devices', function (Blueprint $table) {
             $table->uuid('identifier')->primary();
+            $table->unsignedSmallInteger('type');
             $table->string('label');
             $table->string('name');
             $table->boolean('enabled')->default(false);
