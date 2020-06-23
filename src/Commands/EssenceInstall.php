@@ -1,6 +1,8 @@
 <?php namespace Atxy2k\Essence\Commands;
 
+use Atxy2k\Essence\Services\InstallationService;
 use Illuminate\Console\Command;
+use App;
 
 class EssenceInstall extends Command
 {
@@ -35,6 +37,16 @@ class EssenceInstall extends Command
      */
     public function handle()
     {
-        //
+        /** @var InstallationService $service */
+        $service = App::make(InstallationService::class);
+        $completed = $service->install();
+        if($completed)
+        {
+            $this->info('Completed!!');
+        }
+        else
+        {
+            $this->error($service->errors()->first());
+        }
     }
 }
