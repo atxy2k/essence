@@ -622,4 +622,5 @@ class UsersService extends Service implements UsersServiceInterface
         }
         return $return;
     }
+
 }

@@ -9,6 +9,7 @@ use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\EssenceServiceProvider;
 use Atxy2k\Essence\JsonWebTokens\JsonWebToken;
+use Atxy2k\Essence\Mobile\Mobile;
 use Orchestra\Testbench\TestCase as OrchestraTest;
 use Atxy2k\Essence\Facades\Essence;
 
@@ -26,7 +27,8 @@ class TestCase extends OrchestraTest
     {
         return [
             'Essence' => Essence::class,
-            'Jwt'     => JsonWebToken::class
+            'Jwt'     => JsonWebToken::class,
+            'Mobile'  => Mobile::class
         ];
     }
 

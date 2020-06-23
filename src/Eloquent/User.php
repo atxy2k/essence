@@ -9,11 +9,13 @@ use Atxy2k\Essence\Infraestructure\Model;
 use Atxy2k\Essence\Traits\Configurable;
 use Atxy2k\Essence\Traits\Interactuable;
 use Illuminate\Foundation\Auth\User as Authenticable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticable
 {
     use Interactuable;
     use Configurable;
+    use Notifiable;
 
     protected $fillable = [
         'email', 'password', 'permissions',

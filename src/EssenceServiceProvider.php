@@ -2,6 +2,7 @@
 
 namespace Atxy2k\Essence;
 
+use Atxy2k\Essence\Commands\EssenceInstall;
 use Illuminate\Container\Container;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
@@ -64,9 +65,9 @@ class EssenceServiceProvider extends ServiceProvider
      */
     protected function bootForConsole()
     {
-//        $this->commands([
-//
-//        ]);
+        $this->commands([
+            EssenceInstall::class
+        ]);
         // Publishing the configuration file.
         $this->publishes([
             __DIR__.'/../config/essence.php' => config_path('essence.php'),

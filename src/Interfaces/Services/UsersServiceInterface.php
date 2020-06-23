@@ -139,6 +139,13 @@ interface UsersServiceInterface
      * @return bool
      */
     function removeClaim(int $user_id,array $claims) : bool ;
+
+    /**
+     * Sync user's claims
+     * @param int $user_id
+     * @param array $claims
+     * @return bool
+     */
     function syncClaims(int $user_id, array $claims) : bool ;
 
 }

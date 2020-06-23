@@ -34,10 +34,14 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Atxy2k\\Essence\\EssenceServiceProvider"
+                "Atxy2k\\Essence\\EssenceServiceProvider",
+                "Atxy2k\\Essence\\JsonWebTokens\\JsonWebTokenServiceProvider",
+                "Atxy2k\\Essence\\Mobile\\MobileServiceProvider"
             ],
             "aliases": {
-                "Essence": "Atxy2k\\Essence\\Facades\\Essence"
+                "Essence": "Atxy2k\\Essence\\Facades\\Essence",
+                "Jwt": "Atxy2k\\Essence\\JsonWebTokens\\JsonWebTokenFacade",
+                "Mobile": "Atxy2k\\Essence\\Mobile\\MobileFacade"
             }
         }
     },

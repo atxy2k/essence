@@ -14,5 +14,13 @@ return [
      */
     'auto_activate' => [
         DeviceTypes::BROWSER
+    ],
+
+    'default_user' => [
+        'first_name'=> 'User',
+        'last_name' => 'developer',
+        'email'     => 'developer@essence.com',
+        'password'  => 'passwd'
     ]
+
 ];
