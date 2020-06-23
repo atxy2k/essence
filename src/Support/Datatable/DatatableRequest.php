@@ -2,7 +2,7 @@
 use Atxy2k\Essence\Support\Datatable\Exceptions\UnsupportedConstructorException;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-
+use Illuminate\Support\Arr;
 /**
  * Class DatatableRequest
  * @package Atxy2k\Essence\Support\Datatable
@@ -32,15 +32,15 @@ class DatatableRequest implements Arrayable, Jsonable
     {
         if( is_array($data) )
         {
-            $current_order = array_get($data, 'order', []);
-            $this->draw = array_get($data, 'draw', 1);
-            $this->start= array_get($data,'start', 0);
-            $this->length = array_get($data, 'length', 10);
-            $this->search = array_get( array_get($data,'search', []), 'value', false );
+            $current_order = Arr::get($data, 'order', []);
+            $this->draw = Arr::get($data, 'draw', 1);
+            $this->start= Arr::get($data,'start', 0);
+            $this->length = Arr::get($data, 'length', 10);
+            $this->search = Arr::get( Arr::get($data,'search', []), 'value', false );
             /** @var array $current_order */
             $this->order  =  new Order( count($current_order) > 0 ? $current_order[0] : $this->order ) ; //column & dir
-            $this->columns = array_get($data, 'columns', []);
-            $this->additional_filters = array_get($data,'additional_filters', []);
+            $this->columns = Arr::get($data, 'columns', []);
+            $this->additional_filters = Arr::get($data,'additional_filters', []);
             $this->response = [
                 'draw' => $this->draw,
                 'recordsTotal' => 0,

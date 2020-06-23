@@ -1,6 +1,6 @@
 <?php namespace Atxy2k\Essence\Support\Datatable;
 use Illuminate\Contracts\Support\Arrayable;
-
+use Illuminate\Support\Arr;
 /**
  * Created by PhpStorm.
  * User: atxy2k
@@ -14,8 +14,8 @@ class Order implements Arrayable
 
     public function __construct(array $data)
     {
-        $this->column = array_get($data,'column', 0);
-        $this->dir = array_get($data,'dir', 'desc');
+        $this->column = Arr::get($data,'column', 0);
+        $this->dir = Arr::get($data,'dir', 'desc');
     }
 
     /**

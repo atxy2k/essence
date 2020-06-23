@@ -7,6 +7,7 @@
  */
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Infraestructure\Repository;
+use Illuminate\Support\Collection;
 use IteratorAggregate;
 use Sentinel;
 
@@ -15,10 +16,30 @@ class UsersRepository extends Repository
 
     protected $model = User::class;
 
-    public function admins() : IteratorAggregate
+    public function findByEmail(string $email, $except_id = null) : ?User
     {
-        $admins = Sentinel::getRoleRepository()->findBySlug(config('essence.admin_role_slug'));
-        return $admins->getUsers();
+        return !is_null($except_id) ?
+            $this->query
+                ->where('email', $email)
+                ->where('id', '!=',$except_id)->first() :
+            $this->query
+                ->where('email', $email)->first();
+    }
+
+    public function claims(int $user_id) : Collection
+    {
+        $user = $this->find($user_id);
+        /** @var Collection $claims */
+        $claims = new Collection();
+        $user->claims->each(function($c) use (&$claims){
+            $claims->add($c);
+        });
+        $user->roles->each(function($role) use (&$claims){
+            $role->claims->each(function($c) use (&$claims){
+                $claims->add($c);
+            });
+        });
+        return $claims;
     }
 
 }

@@ -1,5 +1,7 @@
 <?php namespace Atxy2k\Essence\Eloquent;
-use Cartalyst\Sentinel\Roles\EloquentRole;
+
+use Atxy2k\Essence\Infraestructure\Model;
+use Atxy2k\Essence\Traits\Interactuable;
 
 /**
  * Created by PhpStorm.
@@ -7,13 +9,24 @@ use Cartalyst\Sentinel\Roles\EloquentRole;
  * Date: 11/2/2019
  * Time: 12:14
  */
-class Role extends EloquentRole
+class Role extends Model
 {
+    use Interactuable;
 
-    protected $fillable = ['slug', 'name', 'permissions', 'created_at', 'updated_at','blocked'];
+    protected $fillable = ['slug', 'name', 'blocked'];
     protected $guarded = ['id'];
     protected $casts = [
         'blocked' => 'bool'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_roles');
+    }
+
+    public function claims()
+    {
+        return $this->belongsToMany(Claim::class, 'role_claims');
+    }
 
 }

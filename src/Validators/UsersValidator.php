@@ -10,52 +10,37 @@ use Atxy2k\Essence\Infraestructure\Validator;
 class UsersValidator extends Validator
 {
     protected $rules = [
-        'login' => [
-            'email'     => 'required|email|bail',
-            'password'  => 'required'
-        ],
-        'changePassword' =>
-        [
-            'before_password'   => 'required',
-            'password'          => 'required|confirmed|bail'
-        ],
-        'reset_password' =>
-        [
-            'password'          => 'required|confirmed|bail'
-        ],
-        'changeEmail' =>
-        [
-            'email'          => 'required|confirmed|bail'
-        ],
-        'validate_reminder' =>
-        [
-            'email'             => 'required|bail',
-            'code'              => 'required|bail',
-        ],
-        'update_password_from_reminder' =>
-        [
-            'token'             => 'required',
-            'password'          => 'required|confirmed',
-        ],
-        'register' =>
-        [
+        'register' => [
             'first_name'    => 'required|string|bail',
             'last_name'     => 'required|string|bail',
             'email'         => 'required|string|email|confirmed|unique:users,email|bail',
             'password'      => 'required_if:asign_password,1|confirmed|bail',
-            'roles'         => 'required|array|bail',
-            'asign_password' => 'required_with:password'
+            'roles'         => 'required|array|bail'
         ],
-        'activate' => [
-            'email'             => 'required',
-            'code'              => 'required',
+        'authenticate' => [
+            'email' => 'required',
+            'password' => 'required'
+        ],
+        'reset-password' => [
+            'old_password' => 'required',
+            'password'     => 'required|confirmed|bail',
+        ],
+        'change-password' => [
+            'password'     => 'required|confirmed|bail',
+        ],
+        'remove-admin-privileges' => [
+            'roles' => 'required|array'
         ],
         'update' => [
-            'first_name'    => 'required|string|bail',
-            'last_name'     => 'required|string|bail',
+            'first_name' => 'required',
+            'last_name'  => 'required'
         ],
-        'change-admin-role' => [
-            'roles'		=> 'required|array'
+        'request-password-recovery' => [
+            'email' => 'required'
         ],
+        'encoded-password-recovery-token' => [
+            'email' => 'required',
+            'date'  => 'required'
+        ]
     ];
 }

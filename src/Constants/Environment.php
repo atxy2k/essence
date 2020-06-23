@@ -9,6 +9,5 @@ class Environment
 {
     public const ESSENCE_ADMIN  = 'ESSENCE_ADMIN';
 
-    public const LOGIN_PAGE         = 'LOGIN_PAGE';
-    public const DASHBOARD_PAGE     = 'DASHBOARD_PAGE';
+    public const RECOVERY_PASSWORD_TIMEOUT         = 'RECOVERY_PASSWORD_TIMEOUT';
 }

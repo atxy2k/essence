@@ -8,6 +8,7 @@
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\MessageBag;
 
 class HttpResponse implements Arrayable, Jsonable
@@ -29,7 +30,7 @@ class HttpResponse implements Arrayable, Jsonable
         return [
             'status'    => $this->status,
             'errors'    => $this->errors,
-            'first_error' => count($this->errors) > 0 ? array_first($this->errors) : null,
+            'first_error' => count($this->errors) > 0 ? Arr::first($this->errors) : null,
             'data'      => $this->data
         ];
     }

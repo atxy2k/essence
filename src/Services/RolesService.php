@@ -6,110 +6,53 @@
  * Time: 12:43
  */
 
+use Atxy2k\Essence\Constants\Interactions;
 use Atxy2k\Essence\Eloquent\Role;
+use Atxy2k\Essence\Eloquent\User;
+use Atxy2k\Essence\Exceptions\Claims\ClaimNotFoundException;
+use Atxy2k\Essence\Exceptions\Essence\NameIsNotAvailableException;
+use Atxy2k\Essence\Exceptions\Interactions\InteractionNotCreatedException;
+use Atxy2k\Essence\Exceptions\Interactions\InteractionNotFoundException;
+use Atxy2k\Essence\Exceptions\Roles\IntegerOrStringRequiredException;
+use Atxy2k\Essence\Exceptions\Roles\RoleAlreadyHaveClaimException;
+use Atxy2k\Essence\Exceptions\Roles\RoleDoesNotHaveClaimException;
+use Atxy2k\Essence\Exceptions\Roles\RoleIsBlockedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotCreatedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Interfaces\Services\RolesServiceInterface;
+use Atxy2k\Essence\Repositories\InteractionsTypeRepository;
 use Atxy2k\Essence\Repositories\RolesRepository;
 use Atxy2k\Essence\Validators\RolesValidator;
-use Cartalyst\Sentinel\Roles\RoleInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Throwable;
-use Sentinel;
 use DB;
+use Illuminate\Support\Arr;
+use Essence;
+use Exception;
+use Atxy2k\Essence\Repositories\ClaimsRepository;
 
-class RolesService extends Service
+class RolesService extends Service implements RolesServiceInterface
 {
 
     /** @var RolesRepository */
     protected $rolesRepository;
+    /** @var InteractionsService */
+    protected $interactionsService;
+    /** @var ClaimsRepository */
+    protected $claimsRepository;
 
-    public function __construct(RolesValidator $rolesValidator, RolesRepository $rolesRepository)
+    public function __construct(RolesValidator $rolesValidator,
+                                InteractionsService $interactionsService,
+                                ClaimsRepository $claimsRepository,
+                                RolesRepository $rolesRepository)
     {
         parent::__construct();
         $this->rolesRepository = $rolesRepository;
         $this->validator = $rolesValidator;
-    }
-
-    /**
-     * Update existing role
-     * @param int $id
-     * @param array $data
-     * @return RoleInterface|null
-     * @throws \Exception
-     */
-    public function update(int $id, array $data) : ?RoleInterface
-    {
-        $return = null;
-        if ( $this->validator->with($data)->passes('update') )
-        {
-            try
-            {
-                \DB::beginTransaction();
-                $role = Sentinel::getRoleRepository()->findById($id);
-                throw_if(is_null($role), RoleNotFoundException::class);
-                $permissions = [];
-                foreach ( $data['routes'] as $route => $val )
-                {
-                    $permissions[ $route ] = boolval( intval($val) );
-                }
-                $role->update([
-                    'name'  => array_get($data,'name'),
-                    'slug'  => str_slug(array_get($data,'name')),
-                    'permissions' => $permissions
-                ]);
-                $users = array_get($data,'users',[]);
-                $role->users()->sync($users);
-                $role->save();
-                $return = $role;
-                DB::commit();
-            }
-            catch ( \Throwable $e )
-            {
-                $this->pushError($e->getMessage());
-                DB::rollBack();
-            }
-        }
-        return $return;
-    }
-
-    /**
-     * Create a new role
-     * @param array $data
-     * @return RoleInterface|null
-     * @throws \Exception
-     */
-    public function create(array $data) : ?RoleInterface
-    {
-        $return = null;
-        if ( $this->validator->with($data)->passes() )
-        {
-            try
-            {
-                DB::beginTransaction();
-                $permissions = [];
-                foreach ( array_get($data,'routes', []) as $route => $val )
-                {
-                    $permissions[ $route ] = (bool) (int) $val;
-                }
-                $role = $this->rolesRepository->create([
-                    'name'  => array_get($data,'name'),
-                    'slug'  => str_slug(array_get($data,'name')),
-                    'blocked'  => str_slug(array_get($data,'blocked', 0)),
-                    'permissions' => $permissions
-                ]);
-                throw_if(is_null($role), RoleNotCreatedException::class);
-                $users = array_get($data,'users',[]);
-                $role->users()->sync($users);
-                $return = $this->rolesRepository->find($role->id);
-                \DB::commit();
-            }
-            catch (Throwable $e)
-            {
-                \DB::rollBack();
-                $this->pushError($e->getMessage());
-            }
-        }
-        return $return;
+        $this->interactionsService = $interactionsService;
+        $this->claimsRepository = $claimsRepository;
     }
 
     /**
@@ -122,16 +65,14 @@ class RolesService extends Service
         $return = true;
         try
         {
-            $slug = str_slug($name);
+            $slug = Str::slug($name);
             $role = $this->rolesRepository->findBySlug($slug, $except);
-            if ( !is_null($role) )
-            {
-                $return = false;
-            }
+            $return = is_null($role);
         }
         catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
+            Essence::log($e);
         }
         return $return;
     }
@@ -144,49 +85,194 @@ class RolesService extends Service
     public function delete(int $id) : bool
     {
         $return = false;
-        $role = $this->rolesRepository->find($id);
-        try {
+        try
+        {
+            DB::beginTransaction();
+            $role = $this->rolesRepository->find($id);
             throw_if(is_null($role), RoleNotFoundException::class);
+            throw_if($role->blocked, RoleIsBlockedException::class);
             $role->delete();
+            DB::commit();
             $return = true;
         }
         catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
+            DB::rollback();
+            Essence::log($e);
         }
         return $return;
     }
 
-    /**
-     * @param int $id
-     * @param string $name
-     * @param bool $include_users
-     * @return RoleInterface|null
-     */
-    public function clone( int $id, string $name , bool  $include_users = false) : ?RoleInterface
+    function create(array $data): ?Role
     {
         $return = null;
-        $current_role = $this->rolesRepository->find($id);
-        try {
-            throw_if(is_null($current_role), RoleNotFoundException::class);
-            $permissions = $current_role->permissions;
-            $role = Sentinel::getRoleRepository()->createModel()->create([
-                'name'  => trim($name),
-                'slug'  => str_slug(trim($name)),
-                'permissions' => $permissions
-            ]);
+        try
+        {
+            DB::beginTransaction();
+            throw_unless($this->validator->with($data)->passes('create'),
+                new Exception($this->validator->errors()->first()));
+            throw_unless($this->rolesRepository->slugFromTextIsAvailable($data['name']),
+            NameIsNotAvailableException::class);
+            $data['slug'] = Str::slug($data['name']);
+            $data['blocked'] = Arr::get($data,'blocked', false);
+            $role = $this->rolesRepository->create($data);
             throw_if(is_null($role), RoleNotCreatedException::class);
-            if( $include_users)
-            {
-                $users = $current_role->users()->pluck('id');
-                $role->users()->sync($users);
-            }
+
+            $interaction = $this->interactionsService->generate(Interactions::CREATE, $role);
+            throw_if(is_null($interaction), InteractionNotCreatedException::class);
+            DB::commit();
             $return = $role;
-        } catch (Throwable $e)
+        }
+        catch (Throwable $e)
         {
             $this->pushError($e->getMessage());
+            DB::rollback();
+            Essence::log($e);
         }
         return $return;
     }
+
+    function update(int $id, array $data): bool
+    {
+        $return = false;
+        try
+        {
+            DB::beginTransaction();
+            $role = $this->rolesRepository->find($id);
+            throw_if(is_null($role), RoleNotFoundException::class);
+            throw_unless($this->rolesRepository->slugFromTextIsAvailable($data['name'], $role->id),
+                NameIsNotAvailableException::class);
+            throw_if($role->blocked, RoleIsBlockedException::class);
+            $data['slug'] = Str::slug($data['name']);
+            $data['blocked'] = Arr::get($data,'blocked', $role->blocked );
+            $this->rolesRepository->update($id, $data);
+
+            $interaction = $this->interactionsService->generate(Interactions::UPDATE, $role);
+            throw_if(is_null($interaction), InteractionNotCreatedException::class);
+            $return = true;
+            DB::commit();
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            DB::rollback();
+            Essence::log($e);
+        }
+        return $return;
+    }
+
+    function addClaim(int $role_id, array $claims): bool
+    {
+        $return = false;
+        try
+        {
+            DB::beginTransaction();
+            $role = $this->rolesRepository->find($role_id);
+            throw_if(is_null($role), RoleNotFoundException::class);
+            foreach ($claims as $_claim)
+            {
+                throw_unless( is_integer($_claim) || is_string($_claim),
+                IntegerOrStringRequiredException::class);
+                $claim = null;
+                if(is_integer($_claim))
+                {
+                    $claim = $this->claimsRepository->find($_claim);
+                }
+                else
+                {
+                    $claim = $this->claimsRepository->findByIdentifier($_claim);
+                }
+                throw_if(is_null($claim), ClaimNotFoundException::class);
+                throw_if($role->claims->contains($claim), RoleAlreadyHaveClaimException::class);
+                $role->claims()->attach($claim->id);
+            }
+            DB::commit();
+            $return = true;
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            DB::rollback();
+            Essence::log($e);
+        }
+        return $return;
+    }
+
+    function removeClaim(int $role_id, array $claims): bool
+    {
+        $return = false;
+        try
+        {
+            DB::beginTransaction();
+            $role = $this->rolesRepository->find($role_id);
+            throw_if(is_null($role), RoleNotFoundException::class);
+            foreach ($claims as $_claim)
+            {
+                throw_unless( is_integer($_claim) || is_string($_claim),
+                    IntegerOrStringRequiredException::class);
+                $claim = null;
+                if(is_integer($_claim))
+                {
+                    $claim = $this->claimsRepository->find($_claim);
+                }
+                else
+                {
+                    $claim = $this->claimsRepository->findByIdentifier($_claim);
+                }
+                throw_if(is_null($claim), ClaimNotFoundException::class);
+                throw_unless($role->claims->contains($claim), RoleDoesNotHaveClaimException::class);
+                $role->claims()->detach($claim->id);
+            }
+            DB::commit();
+            $return = true;
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            DB::rollback();
+            Essence::log($e);
+        }
+        return $return;
+    }
+
+    function syncClaims(int $role_id, array $claims): bool
+    {
+        $return = false;
+        try
+        {
+            DB::beginTransaction();
+            $role = $this->rolesRepository->find($role_id);
+            throw_if(is_null($role), RoleNotFoundException::class);
+            $role->claims()->sync($claims);
+            DB::commit();
+            $return = true;
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            DB::rollback();
+            Essence::log($e);
+        }
+        return $return;
+    }
+
+    function getIdentifierClaims(int $role_id): ?array
+    {
+        $return = null;
+        try
+        {
+            $role = $this->rolesRepository->find($role_id);
+            throw_if(is_null($role), RoleNotFoundException::class);
+            $return = $role->claims()->pluck('role_claims.claim_id')->all();
+        }
+        catch (Throwable $e)
+        {
+            $this->pushError($e->getMessage());
+            Essence::log($e);
+        }
+        return $return;
+    }
+
 
 }

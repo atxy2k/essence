@@ -2,10 +2,22 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![Build Status][ico-travis]][link-travis]
-[![StyleCI][ico-styleci]][link-styleci]
 
-This is where your description should go. Take a look at [contributing.md](contributing.md) to see a to do list.
+Essence is a library you can use to start to develop a project in laravel, this piece of code include
+a infrastructure to help you to have a order in your project, also include 
+ a little implementation of apps for your project, something like facebook, to use with JWT, 
+  then there are some concepts you need
+to understand before to use it, we have the next.
+
+- Models
+- Repositories
+- Validators
+- Services
+- Criteria
+- Claims
+- Applications
+- Devices
+- Json Web Tokens
 
 ## Installation
 
@@ -16,6 +28,8 @@ $ composer require atxy2k/essence
 ```
 
 ## Usage
+
+This section is coming soon!
 
 ## Change log
 

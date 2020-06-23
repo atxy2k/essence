@@ -10,5 +10,5 @@ use Exception;
 
 class RoleNotFoundException extends Exception
 {
-    protected $message = 'Ocurrió un error al localizar el rol seleccionado';
+    protected $message = 'Role not found';
 }
