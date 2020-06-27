@@ -8,8 +8,7 @@
 use Atxy2k\Essence\Eloquent\User;
 use Atxy2k\Essence\Infraestructure\Repository;
 use Illuminate\Support\Collection;
-use IteratorAggregate;
-use Sentinel;
+use Atxy2k\Essence\Eloquent\Role;
 
 class UsersRepository extends Repository
 {
@@ -41,5 +40,42 @@ class UsersRepository extends Repository
         });
         return $claims;
     }
+
+    public function getIdentifierPermissions(User $user) : array
+    {
+        $claims = $user->claims()->pluck('identifier')->all();
+        $role_claims = $user->roles->map(function($item){
+           return $item->claims;
+        });
+        foreach ($role_claims as $claim_collection)
+        {
+            $claim_collection->each(function($claim) use (&$claims){
+                if( !in_array($claim->identifier, $claims) )
+                {
+                    $claims[] = $claim->identifier;
+                }
+            });
+        }
+        return $claims;
+    }
+
+    public function hasPermission(User $user, string $permission) : bool
+    {
+        $claims = $user->claims()->pluck('identifier')->all();
+        $role_claims = $user->roles->map(function($item){
+           return $item->claims;
+        });
+        foreach ($role_claims as $claim_collection)
+        {
+            $claim_collection->each(function($claim) use (&$claims){
+                if( !in_array($claim->identifier, $claims) )
+                {
+                    $claims[] = $claim->identifier;
+                }
+            });
+        }
+        return in_array($permission, $claims);
+    }
+
 
 }
