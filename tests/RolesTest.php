@@ -346,4 +346,73 @@ class RolesTest extends TestCase
         DB::rollback();
     }
 
+    public function testRolesSearchMethods()
+    {
+        DB::beginTransaction();
+        /** @var RolesService $rolesService */
+        $rolesService = $this->app->make(RolesService::class);
+        /** @var UsersService $service */
+        $service = $this->app->make(UsersService::class);
+        /** @var InteractionsTypeService $interactionTypeService */
+        $interactionTypeService = $this->app->make(InteractionsTypeService::class);
+        /** @var RolesRepository $rolesRepository */
+        $rolesRepository = $this->app->make(RolesRepository::class);
+
+        /** @var ClaimsService $claimsService */
+        $claimsService = $this->app->make(ClaimsService::class);
+
+        $interaction_create_type = $interactionTypeService->create([
+            'name' => 'create',
+            'description' => 'Create element'
+        ]);
+        $this->assertNotNull($interaction_create_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class, $interaction_create_type);
+
+        $interaction_activate_type = $interactionTypeService->create([
+            'name' => Interactions::ACTIVATE,
+            'description' => 'Activat element'
+        ]);
+        $this->assertNotNull($interaction_activate_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class,$interaction_activate_type);
+
+        $interaction_deactivate_type = $interactionTypeService->create([
+            'name' => Interactions::DEACTIVATE,
+            'description' => 'Activat element'
+        ]);
+        $this->assertNotNull($interaction_deactivate_type, $interactionTypeService->errors()->first());
+        $this->assertInstanceOf(InteractionType::class,$interaction_deactivate_type);
+
+        $role_data = [
+            'name' => 'Developer'
+        ];
+        $role = $rolesService->create($role_data);
+        $this->assertNotNull($role, $rolesService->errors()->first());
+
+        $another_role_data = [
+            'name' => 'Standard'
+        ];
+        $another_role = $rolesService->create($another_role_data);
+        $this->assertNotNull($another_role, $rolesService->errors()->first());
+
+        $other_role_data = [
+            'name' => 'Standard 2'
+        ];
+        $other_role = $rolesService->create($other_role_data);
+        $this->assertNotNull($other_role, $rolesService->errors()->first());
+
+        $standardRoles = $rolesRepository->getStandardRoles();
+        $this->assertNotNull($standardRoles);
+        $this->assertInstanceOf(Collection::class, $standardRoles);
+        $this->assertEquals(2, $standardRoles->count());
+
+        $admin_role = $rolesRepository->getAdminRole();
+        $this->assertNotNull($admin_role);
+        $this->assertInstanceOf(Role::class, $admin_role);
+        $this->assertEquals(config('essence.admin_role_slug'), $admin_role->slug);
+
+        DB::rollback();
+    }
+
+
+
 }

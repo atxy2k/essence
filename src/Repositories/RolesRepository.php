@@ -16,5 +16,16 @@ class RolesRepository extends Repository
     protected $model = Role::class;
     use Sluggable;
 
+    public function getStandardRoles() : Collection
+    {
+        $admin_role = config('essence.admin_role_slug');
+        return $this->query->where('slug','!=', $admin_role)->get();
+    }
+
+    public function getAdminRole() : ?Role
+    {
+        $admin_role = config('essence.admin_role_slug');
+        return $this->query->where('slug', $admin_role)->first();
+    }
 
 }
