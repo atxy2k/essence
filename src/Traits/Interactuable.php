@@ -15,6 +15,6 @@ trait Interactuable
             'interactions',
             'interactuable_id',
             'interaction_id'
-        );
+        )->withPivot(['created_by']);
     }
 }
