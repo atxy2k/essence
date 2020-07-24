@@ -134,7 +134,7 @@ class Mobile implements MobileInterface
         throw_if(is_null($application), ApplicationNotFoundException::class);
         throw_if(is_null($device), DeviceNotFoundException::class);
         throw_unless($this->applicationsRepository->isEnabled($application->id), ApplicationIsNotEnabledException::class);
-        throw_unless($device->is_activated, DeviceIsNotEnabledException::class);
+        throw_unless($device->enabled, DeviceIsNotEnabledException::class);
         $this->setApplication($application);
         $this->setDevice($device);
         $user_email = Arr::get($this->token()->getPayload(), 'user_email');
@@ -143,7 +143,7 @@ class Mobile implements MobileInterface
         {
             $user = $this->usersRepository->findByEmail($user_email);
             throw_if(is_null($user), UserNotFoundException::class);
-            throw_unless($user->is_activated, UserIsNotActivatedException::class);
+            throw_unless($user->active, UserIsNotActivatedException::class);
 //            $this->devicesService->addUserHistory([
 //                'device_id' => $device->id,
 //                'user_id' => $user->id
