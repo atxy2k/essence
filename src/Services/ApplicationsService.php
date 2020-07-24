@@ -21,6 +21,8 @@ use Atxy2k\Essence\Eloquent\Application;
 use Exception;
 use Illuminate\Support\Arr;
 use Essence;
+use Jwt;
+use Atxy2k\Essence\JsonWebTokens\JwtToken;
 
 class ApplicationsService extends Service
 {
@@ -140,7 +142,7 @@ class ApplicationsService extends Service
         return $return;
     }
 
-    public function authenticate(string $appId, string $appSecret, int $device_id) : ?JwtToken
+    public function authenticate(string $appId, string $appSecret, string $device_id) : ?JwtToken
     {
         $return = null;
         try
