@@ -14,12 +14,12 @@ class Essence
         $this->configurationsService = $configurationsService;
     }
 
-    public function setOption(string $key, $default = '')
+    public function getOption(string $key, $default = '', $configurable = null)
     {
-        return $this->configurationsService->getConfiguration($key) ?? $default;
+        return $this->configurationsService->getConfiguration($key, $configurable) ?? $default;
     }
 
-    public function getOption(string $key, $value, $encode = false, User $user = null)
+    public function setOption(string $key, $value, $encode = false, User $user = null)
     {
         return $this->configurationsService->setConfiguration($key, $value, $encode, $user);
     }
