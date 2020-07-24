@@ -150,7 +150,7 @@ class Mobile implements MobileInterface
 //            ]);
         }
         $this->setUser($user);
-        $this->devicesService->updateLastAccess($device->id);
+        $this->devicesService->updateLastAccess($device->identifier);
         return $this;
     }
 
