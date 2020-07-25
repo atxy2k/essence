@@ -8,7 +8,7 @@ use Atxy2k\Essence\Eloquent\Configuration;
 
 trait Configurable
 {
-    public function comments()
+    public function configurations()
     {
         return $this->morphMany(Configuration::class, 'configurable');
     }

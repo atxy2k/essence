@@ -34,7 +34,6 @@ class DevicesValidator extends Validator
             ],
             'update' => [
                 'name'       => 'required',
-                'version'    => 'required',
             ],
             'enable' => [
                 'device_id'  => 'required',
