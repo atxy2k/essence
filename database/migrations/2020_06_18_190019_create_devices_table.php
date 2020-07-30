@@ -25,9 +25,9 @@ class CreateDevicesTable extends Migration
             $table->string('platform')->nullable();
             $table->string('webdriver')->nullable();
             $table->string('language')->nullable();
-            $table->unsignedInteger('color_depth')->nullable();
-            $table->unsignedInteger('device_memory')->nullable();
-            $table->unsignedInteger('hardware_concurrency')->nullable();
+            $table->string('color_depth')->nullable();
+            $table->string('device_memory')->nullable();
+            $table->string('hardware_concurrency')->nullable();
             $table->string('timezone')->nullable();
             $table->boolean('session_storage')->nullable();
             $table->boolean('localstorage')->nullable();

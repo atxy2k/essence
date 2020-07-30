@@ -34,9 +34,6 @@ class Device extends Model
         'enabled'
     ];
     protected $casts = [
-        'color_depth' => 'integer',
-        'device_memory' => 'integer',
-        'hardware_concurrency' => 'integer',
         'session_storage' => 'boolean',
         'localstorage' => 'boolean',
         'indexed_db' => 'boolean',
