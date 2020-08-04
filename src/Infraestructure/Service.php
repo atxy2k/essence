@@ -29,7 +29,14 @@ class Service
      */
     public function errors() : MessageBag
     {
-        return $this->validator->errors()->isEmpty() ? $this->errors : $this->errors->merge( $this->validator->errors() ) ;
+        if($this->validator!==null && $this->validator->errors()->isEmpty()) return $this->errors;
+        else
+        {
+            if($this->validator!==null)
+                return $this->errors->merge( $this->validator->errors() );
+            else
+                $this->errors();
+        }
     }
 
     /**
