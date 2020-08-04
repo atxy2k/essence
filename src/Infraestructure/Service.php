@@ -35,7 +35,7 @@ class Service
             if($this->validator!==null)
                 return $this->errors->merge( $this->validator->errors() );
             else
-                $this->errors();
+                $this->errors;
         }
     }
 
