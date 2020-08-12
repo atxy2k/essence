@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use BadMethodCallException;
 use Throwable;
+use Illuminate\Support\Str;
 /**
  * Created by PhpStorm.
  * User: atxy2k
@@ -226,7 +227,7 @@ class Repository implements RepositoryInterface, CriteriaInterface
      */
     public function __call($name, $arguments)
     {
-        if(ends_with($name, 'WithCriteria'))
+        if(Str::endsWith($name, 'WithCriteria'))
         {
             $functionToCall = str_replace('WithCriteria', '', $name);
             throw_unless(method_exists($this,$functionToCall), BadMethodCallException::class);
