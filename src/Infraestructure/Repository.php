@@ -178,7 +178,7 @@ class Repository implements RepositoryInterface, CriteriaInterface
      */
     public function paginate(int $per_page, int $page = 1): LengthAwarePaginator
     {
-        return $this->query->paginate( $per_page, ['*'], null, $page );
+        return $this->query->paginate( $per_page, ['*'], 'page', $page );
     }
 
     /**
