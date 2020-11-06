@@ -235,7 +235,7 @@ class Repository implements RepositoryInterface, CriteriaInterface
             /** @var Criteria $criteria */
             foreach ( $this->getCriteria() as $criteria )
             {
-                $this->query = $criteria->apply($otherModel, $this);
+                $this->query = $criteria->apply($this->query, $this);
             }
             $response = call_user_func_array([$this,$functionToCall], $arguments);
             $this->query = $otherModel;
@@ -251,5 +251,11 @@ class Repository implements RepositoryInterface, CriteriaInterface
     public function getCriteria(): array
     {
         return $this->criteria;
+    }
+
+    public function cleanCriteria(): Repository
+    {
+        $this->criteria = [];
+        return $this;
     }
 }

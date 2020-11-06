@@ -31,4 +31,10 @@ interface CriteriaInterface
      */
     public function getCriteria() : array;
 
+    /**
+     * Clean all criteria
+     * @return Repository
+     */
+    public function cleanCriteria() : Repository;
+
 }

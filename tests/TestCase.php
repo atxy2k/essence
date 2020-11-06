@@ -48,9 +48,9 @@ class TestCase extends OrchestraTest
         $app['config']->set('database.connections.testbench', [
             'driver'    => 'mysql',
             'host'      => '127.0.0.1',
-            'database'  => 'white_rats',
-            'username'  => 'atxy2k',
-            'password'  => 'inariama1110',
+            'database'  => 'studiogeek_essence',
+            'username'  => 'root',
+            'password'  => '',
             'port'      => '3306',
         ]);
         $app['config']->set('essence.admin_role_slug', 'developer');
