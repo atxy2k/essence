@@ -8,12 +8,12 @@ class DeviceLocationHistoryValidator extends Validator
 {
     protected $rules = [
         'create' => [
-            'device_id' => 'required|exists:devices,identifier',
+            'device_id' => 'required|exists:devices,id',
             'latitude'  => 'required',
             'longitude' => 'required'
         ],
         'register' => [
-            'device_id' => 'required|exists:devices,identifier',
+            'device_id' => 'required|exists:devices,id',
             'latitude'  => 'required',
             'longitude' => 'required',
             'date'      => 'required'

@@ -9,7 +9,7 @@ class DeviceAccessHistoryValidator extends Validator
 {
     protected $rules = [
         'create' => [
-            'device_id' => 'required|exists:devices,identifier'
+            'device_id' => 'required|exists:devices,id'
         ]
     ];
 }

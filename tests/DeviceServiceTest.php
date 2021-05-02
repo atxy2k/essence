@@ -30,7 +30,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::ANDROID
         ];
@@ -39,7 +39,7 @@ class DeviceServiceTest extends TestCase
         $this->assertInstanceOf(Device::class, $item);
         $this->assertEquals($item->name, $data['name']);
         $this->assertEquals($item->label, $data['name']);
-        $this->assertEquals($item->identifier, $data['identifier']);
+        $this->assertEquals($item->id, $data['id']);
         $this->assertNull($item->version);
         $this->assertNull($item->os);
         $this->assertNotNull($item->last_connection);
@@ -54,7 +54,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::BROWSER
         ];
@@ -63,7 +63,7 @@ class DeviceServiceTest extends TestCase
         $this->assertInstanceOf(Device::class, $item);
         $this->assertEquals($item->name, $data['name']);
         $this->assertEquals($item->label, $data['name']);
-        $this->assertEquals($item->identifier, $data['identifier']);
+        $this->assertEquals($item->id, $data['id']);
         $this->assertNull($item->version);
         $this->assertNull($item->os);
         $this->assertNotNull($item->last_connection);
@@ -80,7 +80,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::WINDOWS_UNIVERSAL_APPLICATION
         ];
@@ -88,7 +88,7 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($item);
 
         $another_data = [
-            'identifier' => $data['identifier'],
+            'id' => $data['id'],
             'name'       => 'test name 2',
             'type'       => DeviceTypes::WINDOWS_UNIVERSAL_APPLICATION
         ];
@@ -96,7 +96,7 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($them_same_object);
         $this->assertInstanceOf(Device::class, $them_same_object);
         $this->assertEquals($them_same_object->name, $data['name']);
-        $this->assertEquals($them_same_object->identifier, $data['identifier']);
+        $this->assertEquals($them_same_object->id, $data['id']);
         $this->assertNull($them_same_object->version);
         $this->assertNull($them_same_object->os);
         $this->assertNotNull($them_same_object->last_connection);
@@ -113,7 +113,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesRepository $devicesRepository */
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::WINDOWS_UNIVERSAL_APPLICATION
         ];
@@ -121,14 +121,14 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($item);
 
         $another_data = [
-            'identifier' => $data['identifier'],
+            'id'         => $data['id'],
             'name'       => 'test name 2',
             'type'       => DeviceTypes::IOS
         ];
         $them_same_object = $devicesService->create($another_data);
         $this->assertNotNull($them_same_object);
-        $this->assertTrue($devicesService->delete($them_same_object->identifier));
-        $item = $devicesRepository->find($item->identifier);
+        $this->assertTrue($devicesService->delete($them_same_object->id));
+        $item = $devicesRepository->find($item->id);
         $this->assertNull($item);
 
         DB::rollBack();
@@ -147,18 +147,18 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
         $item = $devicesService->create($data);
         $this->assertNotNull($item);
 
-        $this->assertTrue($devicesService->updateLastAccess($item->identifier), $devicesService->errors()->first());
+        $this->assertTrue($devicesService->updateLastAccess($item->id), $devicesService->errors()->first());
 
         /** @var DeviceAccessHistoryRepository $deviceAccessHistoryRepository */
         $deviceAccessHistoryRepository = $this->app->make(DeviceAccessHistoryRepository::class);
-        $history = $deviceAccessHistoryRepository->allByDevice($item->identifier);
+        $history = $deviceAccessHistoryRepository->allByDevice($item->id);
         $this->assertNotNull($history);
         $this->assertEquals(1, $history->count());
         DB::rollBack();
@@ -181,7 +181,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
@@ -189,7 +189,7 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($item);
 
         $this->assertNotNull($devicesService->registerLocationHistory([
-            'device_id' => $item->identifier,
+            'device_id' => $item->id,
             'latitude'  => '-91.6712',
             'longitude'  => '-91.6712',
         ]), $devicesService->errors()->first());
@@ -208,7 +208,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
@@ -216,7 +216,7 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($item);
 
         $location = $devicesService->registerLocationHistory([
-            'device_id' => $item->identifier,
+            'device_id' => $item->id,
             'latitude'  => '-91.6712',
             'longitude'  => '-91.6712',
         ]);
@@ -228,13 +228,13 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($results);
         $this->assertEquals(1, $results->count());
 
-        $this->assertTrue($devicesService->updateLastAccess($item->identifier,[
+        $this->assertTrue($devicesService->updateLastAccess($item->id,[
             'location_id' => $location->id
         ]), $devicesService->errors()->first());
 
         /** @var DeviceAccessHistoryRepository $deviceAccessHistoryRepository */
         $deviceAccessHistoryRepository = $this->app->make(DeviceAccessHistoryRepository::class);
-        $items = $deviceAccessHistoryRepository->allByDevice($item->identifier);
+        $items = $deviceAccessHistoryRepository->allByDevice($item->id);
         $this->assertEquals(1, $items->count());
         foreach ( $items as $log )
         {
@@ -261,15 +261,15 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesRepository $devicesRepository */
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
         $item = $devicesService->create($data);
         $this->assertNotNull($item);
-        $this->assertTrue($devicesService->enable(['device_id' => $item->identifier]),
+        $this->assertTrue($devicesService->enable(['device_id' => $item->id]),
         $devicesService->errors()->first());
-        $existent = $devicesRepository->find($item->identifier);
+        $existent = $devicesRepository->find($item->id);
         $this->assertTrue($existent->enabled);
         DB::rollBack();
     }
@@ -282,16 +282,16 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesRepository $devicesRepository */
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
         $item = $devicesService->create($data);
         $this->assertNotNull($item);
-        $this->assertTrue($devicesService->enable(['device_id' => $item->identifier]), $devicesService->errors()->first());
-        $existent = $devicesRepository->find($item->identifier);
+        $this->assertTrue($devicesService->enable(['device_id' => $item->id]), $devicesService->errors()->first());
+        $existent = $devicesRepository->find($item->id);
         $this->assertTrue($existent->enabled);
-        $this->assertFalse($devicesService->enable(['device_id' => $existent->identifier]), json_encode($devicesService->errors()));
+        $this->assertFalse($devicesService->enable(['device_id' => $existent->id]), json_encode($devicesService->errors()));
         DB::rollBack();
     }
 
@@ -312,7 +312,7 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesRepository $devicesRepository */
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
@@ -330,18 +330,18 @@ class DeviceServiceTest extends TestCase
         /** @var DevicesRepository $devicesRepository */
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
-            'identifier' => uniqid(),
+            'id' => uniqid(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE
         ];
         $item = $devicesService->create($data);
         $this->assertNotNull($item);
-        $this->assertTrue($devicesService->enable(['device_id' => $item->identifier]));
-        $existent = $devicesRepository->find($item->identifier);
+        $this->assertTrue($devicesService->enable(['device_id' => $item->id]));
+        $existent = $devicesRepository->find($item->id);
         $this->assertTrue($existent->enabled);
 
-        $this->assertTrue($devicesService->disable(['device_id'=> $item->identifier]));
-        $existent = $devicesRepository->find($item->identifier);
+        $this->assertTrue($devicesService->disable(['device_id'=> $item->id]));
+        $existent = $devicesRepository->find($item->id);
         $this->assertFalse($existent->enabled);
         DB::rollBack();
     }

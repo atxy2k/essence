@@ -17,7 +17,7 @@ class DevicesValidator extends Validator
         parent::__construct();
         $this->rules = [
             'create' => [
-                'identifier' => 'required',
+                'id'         => 'required',
                 'name'       => 'required',
                 'type'       => [
                     'required',

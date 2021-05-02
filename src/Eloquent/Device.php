@@ -11,9 +11,8 @@ class Device extends Model
 {
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $primaryKey = 'identifier';
     protected $fillable = [
-        'identifier',
+        'id',
         'type',
         'label',
         'name',
@@ -43,17 +42,6 @@ class Device extends Model
         'type'      => 'integer'
     ];
     protected $dates = ['last_connection'];
-
-    public static function boot()
-    {
-        parent::boot();
-        static::creating(function ($instance) {
-            if(is_null($instance->identifier))
-            {
-                $instance->identifier = Str::uuid();
-            }
-        });
-    }
 
     public function access_history()
     {

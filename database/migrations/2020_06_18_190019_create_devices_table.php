@@ -15,7 +15,7 @@ class CreateDevicesTable extends Migration
     {
 
         Schema::create('devices', function (Blueprint $table) {
-            $table->uuid('identifier')->primary();
+            $table->string('id')->primary();
             $table->unsignedSmallInteger('type');
             $table->string('label');
             $table->string('name');
@@ -39,37 +39,37 @@ class CreateDevicesTable extends Migration
 
         Schema::create('device_location_history', function(Blueprint $table){
             $table->bigIncrements('id');
-            $table->uuid('device_id')->nullable();
+            $table->string('device_id')->nullable();
             $table->string('latitude');
             $table->string('longitude');
             $table->dateTime('date')->nullable();
             $table->timestamps();
 
-            $table->foreign('device_id')->references('identifier')
+            $table->foreign('device_id')->references('id')
                 ->on('devices')->onDelete('cascade');
         });
 
         Schema::create('devices_access_history', function(Blueprint $table){
             $table->increments('id');
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->uuid('device_id');
+            $table->string('device_id');
             $table->dateTime('old_access')->nullable();
             $table->unsignedBigInteger('device_location_history_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('device_id')->references('identifier')->on('devices')->onDelete('cascade');
+            $table->foreign('device_id')->references('id')->on('devices')->onDelete('cascade');
             $table->foreign('device_location_history_id')->references('id')->on('device_location_history')
                 ->onDelete('set null');
         });
 
         Schema::create('authorized_apps', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('device_id');
+            $table->string('device_id');
             $table->unsignedBigInteger('application_id');
             $table->timestamps();
 
-            $table->foreign('device_id')->references('identifier')->on('devices')->onDelete('cascade');
+            $table->foreign('device_id')->references('id')->on('devices')->onDelete('cascade');
             $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
         });
 

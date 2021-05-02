@@ -14,12 +14,6 @@ class DevicesRepository extends Repository
 {
     protected $model = Device::class;
 
-    public function findByIdentifier(string $identifier) : ?Device
-    {
-        return $this->query
-            ->where('identifier', $identifier )->first();
-    }
-
     public function updateLastConnection(string $id) : bool
     {
         $return = false;
