@@ -11,7 +11,7 @@ use Validator as LaravelValidator;
 
 class Validator implements ValidatorInterface
 {
-    protected $rules = [
+    protected array $rules = [
         'create' => [],
         'update' => []
     ];

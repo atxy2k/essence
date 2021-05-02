@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 class Repository implements RepositoryInterface, CriteriaInterface
 {
     /** @var string */
-    protected $model = null;
+    protected string $model = '';
     /** @var Model */
     protected $query = null;
     /** @var Container */
