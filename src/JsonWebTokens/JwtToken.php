@@ -149,11 +149,11 @@ class JwtToken implements Arrayable
         return $this->audience;
     }
 
-    public function __toString() : string
+    public function toString() : string
     {
-        $tokenDecode = new TokenDecoded([ 'alg' => $this->alg ], $this->toArray() );
-        $tokenEncoded = $tokenDecode->encode($this->hash);
-        return $tokenEncoded->__toString();
+        $tokenDecode = new TokenDecoded($this->toArray(), [ 'alg' => $this->alg ] );
+        $tokenEncoded = $tokenDecode->encode($this->hash, $this->alg);
+        return $tokenEncoded->toString();
     }
 
     /**

@@ -22,8 +22,8 @@ class JwtTest extends TestCase
         $this->assertNull($jwtToken->getExpiration());
         $this->assertNotNull($jwtToken->getPayload());
         $this->assertIsArray($jwtToken->getPayload());
-        $this->assertNotNull($jwtToken->__toString());
-        $this->assertIsString($jwtToken->__toString());
+        $this->assertNotNull($jwtToken->toString());
+        $this->assertIsString($jwtToken->toString());
     }
 
     public function testEncodeWithPayloadDataNotThrowError()
@@ -38,7 +38,7 @@ class JwtTest extends TestCase
         ];
         $jwtToken = JwtToken::create($payload);
         $this->assertNotNull($jwtToken);
-        $jwt = $jwtToken->__toString();
+        $jwt = $jwtToken->toString();
         $this->assertIsString($jwt);
 
         $decoded = JwtToken::decode($jwt);
@@ -72,7 +72,7 @@ class JwtTest extends TestCase
         ];
         $jwtToken = JwtToken::create($payload);
         $this->assertNotNull($jwtToken);
-        $jwt = $jwtToken->__toString();
+        $jwt = $jwtToken->toString();
         $this->assertIsString($jwt);
 
         $decoded = JwtToken::decode($jwt);
