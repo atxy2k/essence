@@ -14,18 +14,12 @@ class DevicesRepository extends Repository
 {
     protected $model = Device::class;
 
-    public function findByIdentifier(string $identifier) : ?Device
-    {
-        return $this->query
-            ->where('identifier', $identifier )->first();
-    }
-
     public function updateLastConnection(string $id) : bool
     {
         $return = false;
         try
         {
-            $element =  $this->query->where('identifier', $id)->first();
+            $element =  $this->query->where('id', $id)->first();
             throw_if(is_null($element), DeviceNotFoundException::class);
             $element->last_connection = date('Y-m-d H:i:s');
             $element->save();
@@ -40,6 +34,6 @@ class DevicesRepository extends Repository
 
     public function getByIdentifiers(array $identifiers) : Collection
     {
-        return $this->query->whereIn('identifier', $identifiers )->get();
+        return $this->query->whereIn('id', $identifiers )->get();
     }
 }

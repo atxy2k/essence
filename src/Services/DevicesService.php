@@ -55,7 +55,7 @@ class DevicesService extends Service
             DB::beginTransaction();
             throw_unless($this->validator->with($data)->passes('create'),
                 new ValidationException($this->validator->errors()->first()));
-            $existing = $this->devicesRepository->findByIdentifier($data['identifier']);
+            $existing = $this->devicesRepository->find($data['id']);
             if( is_null($existing) )
             {
                 $autoactivated_devices = config('essence.auto_activate', []);
@@ -69,7 +69,7 @@ class DevicesService extends Service
                     $data['user_id'] = !is_null($user) ? $user->id : null;
                 }
                 $item = $this->devicesRepository->create($data);
-                $return = $this->devicesRepository->find($item->identifier);
+                $return = $this->devicesRepository->find($item->id);
             }
             else
             {
