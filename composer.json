@@ -13,14 +13,14 @@
     "keywords": ["Laravel", "Essence"],
     "require": {
         "illuminate/support": "~7|~8",
-        "nowakowskir/php-jwt": "^2"
+        "nowakowskir/php-jwt": "^2",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4|^9.0",
         "mockery/mockery": "^1.1",
         "sempro/phpunit-pretty-print": "^1.0",
-        "orchestra/testbench": "^5.2",
-        "ext-json": "*"
+        "orchestra/testbench": "^5.2"
     },
     "autoload": {
         "psr-4": {

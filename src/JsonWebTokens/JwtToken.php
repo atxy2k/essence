@@ -67,11 +67,12 @@ class JwtToken implements Arrayable
         /** @var TokenDecoded $tokenDecode */
         $tokenDecode = $tokenEncoded->decode();
         $payload = $tokenDecode->getPayload();
+        $content = json_decode(decrypt(Arr::get($payload, 'content')), true);
         $item = new self();
-        $item->setIdentifier(Arr::get($payload, 'identifier'));
-        $item->setAudience(Arr::get($payload, 'audience'));
-        $item->setPayload($payload);
-        $item->setExpiration( $payload['expiration'] !== null ? Carbon::createFromFormat(self::DATE_FORMAT, $payload['expiration']) : null );
+        $item->setIdentifier(Arr::get($content, 'identifier'));
+        $item->setAudience(Arr::get($content, 'audience'));
+        $item->setPayload($content);
+        $item->setExpiration( $content['expiration'] !== null ? Carbon::createFromFormat(self::DATE_FORMAT, $content['expiration']) : null );
         return $item;
     }
 
@@ -163,10 +164,12 @@ class JwtToken implements Arrayable
      */
     public function toArray()
     {
-        return array_merge([
-            'identifier' => $this->identifier,
-            'audience'   => $this->audience,
-            'expiration' => $this->expiration !== null ? $this->expiration->format(self::DATE_FORMAT) : null
-        ], $this->payload);
+        return [
+            'content' => encrypt(json_encode(array_merge([
+                'identifier' => $this->identifier,
+                'audience'   => $this->audience,
+                'expiration' => $this->expiration !== null ? $this->expiration->format(self::DATE_FORMAT) : null
+            ], $this->payload)))
+        ];
     }
 }
