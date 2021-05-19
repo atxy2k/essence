@@ -1,6 +1,6 @@
 <?php namespace Atxy2k\Essence\Repositories;
 use Atxy2k\Essence\Eloquent\ChangeEmailRequest;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 
 /**
  * Created by PhpStorm.

@@ -1,7 +1,7 @@
 <?php namespace Atxy2k\Essence\Tests\Criteria;
 
-use Atxy2k\Essence\Infraestructure\Criteria;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Criteria;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 

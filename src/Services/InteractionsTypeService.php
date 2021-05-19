@@ -6,7 +6,7 @@ namespace Atxy2k\Essence\Services;
 
 use Atxy2k\Essence\Eloquent\InteractionType;
 use Atxy2k\Essence\Exceptions\Essence\NameIsNotAvailableException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Interfaces\Services\InteractionsTypeServiceInterface;
 use Atxy2k\Essence\Repositories\InteractionsTypeRepository;
 use Atxy2k\Essence\Validators\InteractionTypeValidator;

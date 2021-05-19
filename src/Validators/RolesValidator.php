@@ -5,7 +5,7 @@
  * Date: 12/2/2019
  * Time: 12:52
  */
-use Atxy2k\Essence\Infraestructure\Validator;
+use Atxy2k\Essence\Infrastructure\Validator;
 
 class RolesValidator extends Validator
 {

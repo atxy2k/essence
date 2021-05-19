@@ -1,4 +1,4 @@
-<?php namespace Atxy2k\Essence\Infraestructure;
+<?php namespace Atxy2k\Essence\Infrastructure;
 /**
  * Created by PhpStorm.
  * User: atxy2k

@@ -11,7 +11,7 @@ use Atxy2k\Essence\Exceptions\Applications\DeviceShouldBeDisableException;
 use Atxy2k\Essence\Exceptions\Applications\DeviceShouldBeEnableException;
 use Atxy2k\Essence\Exceptions\Essence\ValidationException;
 use Atxy2k\Essence\Exceptions\Installations\InstallationNotCreatedException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Repositories\DevicesRepository;
 use Atxy2k\Essence\Validators\DevicesValidator;
 use DB;

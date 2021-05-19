@@ -5,7 +5,7 @@ namespace Atxy2k\Essence\Repositories;
 
 
 use Atxy2k\Essence\Eloquent\Claim;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Atxy2k\Essence\Interfaces\RepositoryInterface;
 use Composer\Repository\BaseRepository;
 use Illuminate\Database\Eloquent\Model;

@@ -7,7 +7,7 @@ namespace Atxy2k\Essence\Services;
 use Atxy2k\Essence\Eloquent\Interaction;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotCreatedException;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotFoundException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Repositories\InteractionsRepository;
 use Atxy2k\Essence\Repositories\InteractionsTypeRepository;
 use Atxy2k\Essence\Validators\InteractionsValidator;

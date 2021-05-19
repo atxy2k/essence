@@ -5,7 +5,7 @@ namespace Atxy2k\Essence\Repositories;
 
 
 use Atxy2k\Essence\Eloquent\Configuration;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 
 class ConfigurationsRepository extends Repository
 {

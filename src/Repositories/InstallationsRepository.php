@@ -7,7 +7,7 @@ namespace Atxy2k\Essence\Repositories;
 use Atxy2k\Essence\Eloquent\Installation;
 use Atxy2k\Essence\Exceptions\Installations\InstallationAlreadyAuthorized;
 use Atxy2k\Essence\Exceptions\Installations\InstallationNotFoundException;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Throwable;
 

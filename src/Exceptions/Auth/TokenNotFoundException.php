@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Atxy2k\Essence\Exceptions\Mobile;
+namespace Atxy2k\Essence\Exceptions\Auth;
 
 use Exception;
 class TokenNotFoundException extends Exception

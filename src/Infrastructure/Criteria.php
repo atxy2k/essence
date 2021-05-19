@@ -1,4 +1,4 @@
-<?php namespace Atxy2k\Essence\Infraestructure;
+<?php namespace Atxy2k\Essence\Infrastructure;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

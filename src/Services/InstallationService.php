@@ -9,7 +9,7 @@ use Atxy2k\Essence\Exceptions\Essence\ValidationException;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotCreatedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotCreatedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotCreatedException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use DB;
 use Throwable;
 

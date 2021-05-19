@@ -6,7 +6,7 @@ use Atxy2k\Essence\Eloquent\DeviceLocationHistory;
 use Atxy2k\Essence\Exceptions\Applications\DeviceNotFoundException;
 use Atxy2k\Essence\Exceptions\Applications\LocationHistoryAlreadyExistsException;
 use Atxy2k\Essence\Exceptions\Essence\ValidationException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Repositories\DeviceLocationHistoryRepository;
 use Atxy2k\Essence\Repositories\DevicesRepository;
 use Atxy2k\Essence\Validators\DeviceLocationHistoryValidator;

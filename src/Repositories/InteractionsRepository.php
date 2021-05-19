@@ -5,7 +5,7 @@ namespace Atxy2k\Essence\Repositories;
 
 
 use Atxy2k\Essence\Eloquent\Interaction;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 
 class InteractionsRepository extends Repository
 {

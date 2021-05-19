@@ -9,7 +9,7 @@ use Atxy2k\Essence\Exceptions\Applications\ApplicationNotFoundException;
 use Atxy2k\Essence\Exceptions\Applications\DeviceNotFoundException;
 use Atxy2k\Essence\Exceptions\Essence\UnexpectedException;
 use Atxy2k\Essence\Exceptions\Essence\ValidationException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Interfaces\RepositoryInterface;
 use Atxy2k\Essence\Repositories\ApplicationsRepository;
 use Atxy2k\Essence\Repositories\DevicesRepository;

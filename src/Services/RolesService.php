@@ -19,7 +19,7 @@ use Atxy2k\Essence\Exceptions\Roles\RoleDoesNotHaveClaimException;
 use Atxy2k\Essence\Exceptions\Roles\RoleIsBlockedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotCreatedException;
 use Atxy2k\Essence\Exceptions\Roles\RoleNotFoundException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Interfaces\Services\RolesServiceInterface;
 use Atxy2k\Essence\Repositories\InteractionsTypeRepository;
 use Atxy2k\Essence\Repositories\RolesRepository;

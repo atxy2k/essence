@@ -1,11 +1,11 @@
-<?php namespace Atxy2k\Essence\Infraestructure;
+<?php namespace Atxy2k\Essence\Infrastructure;
 /**
  * Created by PhpStorm.
  * User: atxy2k
  * Date: 11/2/2019
  * Time: 15:19
  */
-use Atxy2k\Essence\Infraestructure\Validator;
+use Atxy2k\Essence\Infrastructure\Validator;
 use Illuminate\Support\MessageBag;
 
 class Service

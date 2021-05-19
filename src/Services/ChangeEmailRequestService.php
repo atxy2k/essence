@@ -15,7 +15,7 @@ use Atxy2k\Essence\Exceptions\Essence\UnexpectedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Atxy2k\Essence\Eloquent\ChangeEmailRequest;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Sentinel;
 use Atxy2k\Essence\Repositories\ChangeEmailRequestRepository;
 use Atxy2k\Essence\Validators\ChangeEmailRequestValidator;

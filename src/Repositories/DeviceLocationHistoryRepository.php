@@ -4,7 +4,7 @@
 namespace Atxy2k\Essence\Repositories;
 
 use Atxy2k\Essence\Eloquent\DeviceLocationHistory;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 

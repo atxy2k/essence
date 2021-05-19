@@ -6,7 +6,7 @@ namespace Atxy2k\Essence\Services;
 
 use Atxy2k\Essence\Eloquent\DeviceAccessHistory;
 use Atxy2k\Essence\Exceptions\Essence\ValidationException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Repositories\DeviceAccessHistoryRepository;
 use Atxy2k\Essence\Validators\DeviceAccessHistoryValidator;
 use Auth;

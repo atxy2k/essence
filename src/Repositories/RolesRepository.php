@@ -7,7 +7,7 @@
  */
 
 use Atxy2k\Essence\Eloquent\Role;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Atxy2k\Essence\Traits\Sluggable;
 use Illuminate\Support\Collection;
 

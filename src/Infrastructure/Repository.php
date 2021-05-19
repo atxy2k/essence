@@ -1,4 +1,4 @@
-<?php namespace Atxy2k\Essence\Infraestructure;
+<?php namespace Atxy2k\Essence\Infrastructure;
 use Atxy2k\Essence\Interfaces\CriteriaInterface;
 use Atxy2k\Essence\Interfaces\RepositoryInterface;
 use Illuminate\Container\Container;

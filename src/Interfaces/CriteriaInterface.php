@@ -5,10 +5,8 @@
  * Date: 11/2/2019
  * Time: 15:39
  */
-use Atxy2k\Essence\Infraestructure\Criteria;
-use Atxy2k\Essence\Infraestructure\Repository;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Atxy2k\Essence\Infrastructure\Criteria;
+use Atxy2k\Essence\Infrastructure\Repository;
 
 interface CriteriaInterface
 {

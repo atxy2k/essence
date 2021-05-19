@@ -8,7 +8,7 @@ use Atxy2k\Essence\Eloquent\Installation;
 use Atxy2k\Essence\Exceptions\Essence\InvalidParamsException;
 use Atxy2k\Essence\Exceptions\Installations\InstallationAlreadyAuthorized;
 use Atxy2k\Essence\Exceptions\Installations\InstallationNotFoundException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Repositories\InstallationsRepository;
 use Atxy2k\Essence\Validators\InstallationsValidator;
 use Illuminate\Support\Arr;

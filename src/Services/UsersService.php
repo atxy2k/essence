@@ -35,7 +35,7 @@ use Atxy2k\Essence\Exceptions\Users\UserIsNotActivatedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotActiveException;
 use Atxy2k\Essence\Exceptions\Users\UserNotCreatedException;
 use Atxy2k\Essence\Exceptions\Users\UserNotFoundException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Interfaces\Services\UsersServiceInterface;
 use Atxy2k\Essence\Repositories\ClaimsRepository;
 use Atxy2k\Essence\Repositories\InteractionsTypeRepository;

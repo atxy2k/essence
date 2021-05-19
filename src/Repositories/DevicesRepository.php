@@ -5,7 +5,7 @@ namespace Atxy2k\Essence\Repositories;
 
 use Atxy2k\Essence\Eloquent\Device;
 use Atxy2k\Essence\Exceptions\Applications\DeviceNotFoundException;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Exception;
 use Illuminate\Support\Collection;
 use Throwable;

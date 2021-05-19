@@ -7,7 +7,7 @@ use Atxy2k\Essence\Constants\Browsers;
 use Atxy2k\Essence\Constants\Desktop;
 use Atxy2k\Essence\Constants\DeviceTypes;
 use Atxy2k\Essence\Constants\Phone;
-use Atxy2k\Essence\Infraestructure\Validator;
+use Atxy2k\Essence\Infrastructure\Validator;
 use Illuminate\Validation\Rule;
 
 class DevicesValidator extends Validator

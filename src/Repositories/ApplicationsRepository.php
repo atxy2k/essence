@@ -5,7 +5,7 @@ namespace Atxy2k\Essence\Repositories;
 
 
 use Atxy2k\Essence\Eloquent\Application;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Atxy2k\Essence\Interfaces\Repositories\ApplicationsRepositoryInterface;
 
 class ApplicationsRepository extends Repository implements ApplicationsRepositoryInterface

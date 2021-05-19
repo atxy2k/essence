@@ -8,7 +8,7 @@ use Atxy2k\Essence\Exceptions\Claims\ClaimNotFoundException;
 use Atxy2k\Essence\Exceptions\Claims\ClaimNotUpdatedException;
 use Atxy2k\Essence\Exceptions\Essence\NameIsNotAvailableException;
 use Atxy2k\Essence\Exceptions\Essence\ValidationException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Interfaces\Services\ClaimsServiceInterface;
 use Atxy2k\Essence\Repositories\ClaimsRepository;
 use Atxy2k\Essence\Validators\ClaimsValidator;

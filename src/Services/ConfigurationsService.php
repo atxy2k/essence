@@ -6,7 +6,7 @@ namespace Atxy2k\Essence\Services;
 
 use Atxy2k\Essence\Eloquent\Configuration;
 use Atxy2k\Essence\Exceptions\Configurations\ConfigurationNotFoundException;
-use Atxy2k\Essence\Infraestructure\Service;
+use Atxy2k\Essence\Infrastructure\Service;
 use Atxy2k\Essence\Interfaces\Services\ConfigurationsServiceInterface;
 use Atxy2k\Essence\Repositories\ConfigurationsRepository;
 use DB;

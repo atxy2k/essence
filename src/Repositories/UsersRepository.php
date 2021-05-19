@@ -6,7 +6,7 @@
  * Time: 17:47
  */
 use Atxy2k\Essence\Eloquent\User;
-use Atxy2k\Essence\Infraestructure\Repository;
+use Atxy2k\Essence\Infrastructure\Repository;
 use Illuminate\Support\Collection;
 use Atxy2k\Essence\Eloquent\Role;
 
