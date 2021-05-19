@@ -10,7 +10,7 @@ use Atxy2k\Essence\Interfaces\Repositories\ApplicationsRepositoryInterface;
 
 class ApplicationsRepository extends Repository implements ApplicationsRepositoryInterface
 {
-    protected $model = Application::class;
+    protected ?string $model = Application::class;
 
     public function findByAppId(string $appId): ?Application
     {

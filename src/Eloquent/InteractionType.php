@@ -1,6 +1,8 @@
 <?php namespace Atxy2k\Essence\Eloquent;
 
-use Atxy2k\Essence\Infraestructure\Model;
+
+
+use Illuminate\Database\Eloquent\Model;
 
 class InteractionType extends Model
 {

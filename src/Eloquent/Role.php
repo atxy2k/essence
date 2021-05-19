@@ -1,7 +1,7 @@
 <?php namespace Atxy2k\Essence\Eloquent;
 
-use Atxy2k\Essence\Infraestructure\Model;
 use Atxy2k\Essence\Traits\Interactuable;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Created by PhpStorm.

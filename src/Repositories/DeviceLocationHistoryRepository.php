@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 class DeviceLocationHistoryRepository extends Repository
 {
 
-    protected $model = DeviceLocationHistory::class;
+    protected ?string $model = DeviceLocationHistory::class;
 
     public function exists(string $device_id, Carbon $date) : bool
     {

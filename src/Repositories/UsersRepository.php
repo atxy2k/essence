@@ -13,7 +13,7 @@ use Atxy2k\Essence\Eloquent\Role;
 class UsersRepository extends Repository
 {
 
-    protected $model = User::class;
+    protected ?string $model = User::class;
 
     public function findByEmail(string $email, $except_id = null) : ?User
     {

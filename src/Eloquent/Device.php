@@ -42,4 +42,9 @@ class Device extends Model
         return $this->belongsToMany(Application::class, 'authorized_apps');
     }
 
+    public function installations()
+    {
+        return $this->hasMany(Installation::class);
+    }
+
 }

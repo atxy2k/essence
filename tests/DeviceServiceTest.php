@@ -14,6 +14,7 @@ use Atxy2k\Essence\Repositories\DevicesRepository;
 use DB;
 use Atxy2k\Essence\Services\DevicesService;
 use App;
+use Illuminate\Support\Str;
 
 class DeviceServiceTest extends TestCase
 {
@@ -32,8 +33,11 @@ class DeviceServiceTest extends TestCase
         DB::beginTransaction();
         /** @var DevicesService $devicesService */
         $devicesService = $this->app->make(DevicesService::class);
+        /** @var DevicesRepository $devicesRepository */
+        $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
             'id'         => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::MOBILE,
             'subtype'    => Phone::ANDROID
@@ -41,6 +45,7 @@ class DeviceServiceTest extends TestCase
         $item = $devicesService->create($data);
         $this->assertNotNull($item, json_encode($devicesService->errors()));
         $this->assertInstanceOf(Device::class, $item);
+        $item = $devicesRepository->find($item->id);
         $this->assertEquals($item->name, $data['name']);
         $this->assertEquals($item->label, $data['name']);
         $this->assertEquals($item->type, DeviceTypes::MOBILE);
@@ -51,6 +56,8 @@ class DeviceServiceTest extends TestCase
         $this->assertNotNull($item->last_connection);
         $this->assertNull($item->user_id);
         $this->assertFalse($item->enabled);
+        $this->assertNotNull($item->installations);
+        $this->assertEquals(1, $item->installations->count());
         DB::rollBack();
     }
 
@@ -61,6 +68,7 @@ class DeviceServiceTest extends TestCase
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::BROWSER,
             'subtype'    => Browsers::CHROME
@@ -88,6 +96,7 @@ class DeviceServiceTest extends TestCase
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::WINDOWS_UNIVERSAL_APPLICATION
@@ -97,6 +106,7 @@ class DeviceServiceTest extends TestCase
 
         $another_data = [
             'id'         => $data['id'],
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name 2',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -123,6 +133,7 @@ class DeviceServiceTest extends TestCase
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -132,6 +143,7 @@ class DeviceServiceTest extends TestCase
 
         $another_data = [
             'id'        => $data['id'],
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name 2',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::WINDOWS_UNIVERSAL_APPLICATION
@@ -159,6 +171,7 @@ class DeviceServiceTest extends TestCase
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -194,6 +207,7 @@ class DeviceServiceTest extends TestCase
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -222,6 +236,7 @@ class DeviceServiceTest extends TestCase
         $devicesService = $this->app->make(DevicesService::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -276,6 +291,7 @@ class DeviceServiceTest extends TestCase
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -298,6 +314,7 @@ class DeviceServiceTest extends TestCase
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -329,6 +346,7 @@ class DeviceServiceTest extends TestCase
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native
@@ -348,6 +366,7 @@ class DeviceServiceTest extends TestCase
         $devicesRepository = $this->app->make(DevicesRepository::class);
         $data = [
             'id' => uniqid(),
+            'installation_id' => Str::uuid()->toString(),
             'name'       => 'test name',
             'type'       => DeviceTypes::DESKTOP_APPLICATION,
             'subtype'    => Desktop::Native

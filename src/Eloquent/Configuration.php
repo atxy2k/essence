@@ -5,11 +5,10 @@
  * Date: 12/2/2019
  * Time: 15:00
  */
-use Atxy2k\Essence\Infraestructure\Model;
 use Throwable;
 use Essence;
 
-class Configuration extends Model
+class Configuration extends \Illuminate\Database\Eloquent\Model
 {
 
     protected $table    = 'configurations';

@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class DeviceAccessHistoryRepository extends Repository
 {
-    protected $model = DeviceAccessHistory::class;
+    protected ?string $model = DeviceAccessHistory::class;
 
     public function lastAccess(string $device_id) : ?DeviceAccessHistory
     {

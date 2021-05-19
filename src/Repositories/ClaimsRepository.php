@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class ClaimsRepository extends Repository implements RepositoryInterface
 {
-    protected $model = Claim::class;
+    protected ?string $model = Claim::class;
 
     public function findByIdentifier(string $identifier, $id = null ) : ?Model
     {

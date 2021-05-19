@@ -36,12 +36,9 @@ use Atxy2k\Essence\Repositories\ClaimsRepository;
 class RolesService extends Service implements RolesServiceInterface
 {
 
-    /** @var RolesRepository */
-    protected $rolesRepository;
-    /** @var InteractionsService */
-    protected $interactionsService;
-    /** @var ClaimsRepository */
-    protected $claimsRepository;
+    protected RolesRepository $rolesRepository;
+    protected InteractionsService $interactionsService;
+    protected ClaimsRepository $claimsRepository;
 
     public function __construct(RolesValidator $rolesValidator,
                                 InteractionsService $interactionsService,

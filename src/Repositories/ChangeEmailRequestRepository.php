@@ -10,7 +10,7 @@ use Atxy2k\Essence\Infraestructure\Repository;
  */
 class ChangeEmailRequestRepository extends Repository
 {
-    protected $model = ChangeEmailRequest::class;
+    protected ?string $model = ChangeEmailRequest::class;
 
     public function findByEmail(string $email) : ?ChangeEmailRequest
     {

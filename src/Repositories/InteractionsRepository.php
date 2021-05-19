@@ -9,5 +9,5 @@ use Atxy2k\Essence\Infraestructure\Repository;
 
 class InteractionsRepository extends Repository
 {
-    protected $model = Interaction::class;
+    protected ?string $model = Interaction::class;
 }

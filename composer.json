@@ -12,6 +12,7 @@
     "homepage": "https://github.com/atxy2k/essence",
     "keywords": ["Laravel", "Essence"],
     "require": {
+        "php": ">=7.4",
         "illuminate/support": "~7|~8",
         "nowakowskir/php-jwt": "^2",
         "ext-json": "*"

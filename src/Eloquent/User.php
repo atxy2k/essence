@@ -5,7 +5,6 @@
  * Date: 11/2/2019
  * Time: 11:25
  */
-use Atxy2k\Essence\Infraestructure\Model;
 use Atxy2k\Essence\Traits\Configurable;
 use Atxy2k\Essence\Traits\Interactuable;
 use Illuminate\Foundation\Auth\User as Authenticable;

@@ -10,6 +10,6 @@ use Atxy2k\Essence\Traits\Sluggable;
 
 class InteractionsTypeRepository extends Repository
 {
-    protected $model = InteractionType::class;
+    protected ?string $model = InteractionType::class;
     use Sluggable;
 }

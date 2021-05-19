@@ -51,16 +51,6 @@ class CreateDevicesTable extends Migration
                 ->onDelete('set null');
         });
 
-        Schema::create('authorized_apps', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('device_id');
-            $table->unsignedBigInteger('application_id');
-            $table->timestamps();
-
-            $table->foreign('device_id')->references('id')->on('devices')->onDelete('cascade');
-            $table->foreign('application_id')->references('id')->on('applications')->onDelete('cascade');
-        });
-
     }
 
     /**
@@ -70,7 +60,6 @@ class CreateDevicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('authorized_apps');
         Schema::dropIfExists('devices_access_history');
         Schema::dropIfExists('device_location_history');
         Schema::dropIfExists('devices');

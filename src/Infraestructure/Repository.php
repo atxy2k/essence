@@ -16,14 +16,11 @@ use Illuminate\Support\Str;
  */
 class Repository implements RepositoryInterface, CriteriaInterface
 {
-    /** @var string */
-    protected $model = null;
+    protected ?string $model = null;
     /** @var Model */
     protected $query = null;
-    /** @var Container */
-    protected $app = null;
-    /** @var array  */
-    protected $criteria = [];
+    protected ?Container $app = null;
+    protected array $criteria = [];
 
     public function __construct(Container $app)
     {

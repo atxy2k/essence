@@ -12,8 +12,7 @@ class Service
 {
     /** @var Validator */
     protected $validator;
-    /** @var MessageBag */
-    protected $errors = null;
+    protected ?MessageBag $errors = null;
 
     /**
      * Service constructor.

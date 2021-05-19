@@ -12,7 +12,7 @@ use Throwable;
 
 class DevicesRepository extends Repository
 {
-    protected $model = Device::class;
+    protected ?string $model = Device::class;
 
     public function updateLastConnection(string $id) : bool
     {

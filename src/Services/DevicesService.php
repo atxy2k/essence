@@ -10,6 +10,7 @@ use Atxy2k\Essence\Exceptions\Applications\DeviceNotFoundException;
 use Atxy2k\Essence\Exceptions\Applications\DeviceShouldBeDisableException;
 use Atxy2k\Essence\Exceptions\Applications\DeviceShouldBeEnableException;
 use Atxy2k\Essence\Exceptions\Essence\ValidationException;
+use Atxy2k\Essence\Exceptions\Installations\InstallationNotCreatedException;
 use Atxy2k\Essence\Infraestructure\Service;
 use Atxy2k\Essence\Repositories\DevicesRepository;
 use Atxy2k\Essence\Validators\DevicesValidator;
@@ -25,18 +26,18 @@ class DevicesService extends Service
 {
 
     protected $validator;
-    protected $devicesRepository;
-    /** @var DeviceAccessHistoryService */
-    protected $devicesAccessHistoryService;
-    /** @var DeviceLocationHistoryService */
-    protected $deviceLocationHistoryService;
-    /** @var UsersRepository */
-    protected $usersRepository;
+    protected DevicesRepository $devicesRepository;
+
+    protected DeviceAccessHistoryService $devicesAccessHistoryService;
+    protected DeviceLocationHistoryService $deviceLocationHistoryService;
+    protected UsersRepository $usersRepository;
+    protected InstallationsService $installationsService;
 
     public function __construct( DevicesRepository $devicesRepository,
                                  DevicesValidator $devicesValidator,
                                  DeviceAccessHistoryService $deviceAccessHistoryService,
                                  UsersRepository $usersRepository,
+                                 InstallationsService $installationsService,
                                  DeviceLocationHistoryService $deviceLocationHistoryService)
     {
         parent::__construct();
@@ -45,6 +46,7 @@ class DevicesService extends Service
         $this->devicesAccessHistoryService = $deviceAccessHistoryService;
         $this->deviceLocationHistoryService = $deviceLocationHistoryService;
         $this->usersRepository = $usersRepository;
+        $this->installationsService = $installationsService;
     }
 
     public function create(array $data = []) : ?Device
@@ -56,10 +58,15 @@ class DevicesService extends Service
             throw_unless($this->validator->with($data)->passes('create'),
                 new ValidationException($this->validator->errors()->first()));
             $existing = $this->devicesRepository->find($data['id']);
+            $installation_data = [
+                'id' => Arr::get($data, 'installation_id'),
+                'device_id' => Arr::get($data, 'id')
+            ];
+            $autoactivated_devices = config('essence.auto_activate', []);
+            $auto_activated = in_array($data['type'], $autoactivated_devices);
             if( is_null($existing) )
             {
-                $autoactivated_devices = config('essence.auto_activate', []);
-                $data['enabled'] = in_array($data['type'], $autoactivated_devices);
+                $data['enabled'] = $auto_activated;
                 $data['last_connection'] = date('Y-m-d H:i:s');
                 $data['label'] = Arr::get($data,'label', $data['name'] );
                 $data['user_id'] = null;
@@ -77,6 +84,9 @@ class DevicesService extends Service
                 $existing->save();
                 $return = $existing;
             }
+            $installation_data['activate'] = $auto_activated;
+            $installation = $this->installationsService->create($installation_data);
+            throw_if(is_null($installation), InstallationNotCreatedException::class);
             DB::commit();
         }
         catch (Throwable $e)

@@ -5,7 +5,6 @@ namespace Atxy2k\Essence\Services;
 
 
 use Atxy2k\Essence\Eloquent\Interaction;
-use Atxy2k\Essence\Eloquent\Role;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotCreatedException;
 use Atxy2k\Essence\Exceptions\Interactions\InteractionNotFoundException;
 use Atxy2k\Essence\Infraestructure\Service;
@@ -19,10 +18,8 @@ use Auth;
 
 class InteractionsService extends Service
 {
-    /** @var InteractionsRepository */
-    protected $interactionsRepository;
-    /** @var InteractionsTypeRepository */
-    protected $interactionsTypeRepository;
+    protected InteractionsRepository $interactionsRepository;
+    protected InteractionsTypeRepository $interactionsTypeRepository;
 
     public function __construct(InteractionsRepository $interactionsRepository,
                                 InteractionsTypeRepository $interactionsTypeRepository,

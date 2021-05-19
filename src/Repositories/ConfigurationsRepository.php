@@ -9,7 +9,7 @@ use Atxy2k\Essence\Infraestructure\Repository;
 
 class ConfigurationsRepository extends Repository
 {
-    protected $model = Configuration::class;
+    protected ?string $model = Configuration::class;
 
     public function findByKey(string $key, object $configurable = null) : ?Configuration
     {

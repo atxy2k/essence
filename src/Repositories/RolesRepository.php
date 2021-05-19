@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 class RolesRepository extends Repository
 {
-    protected $model = Role::class;
+    protected ?string $model = Role::class;
     use Sluggable;
 
     public function getStandardRoles() : Collection
