@@ -9,47 +9,12 @@ use Illuminate\Support\MessageBag;
  */
 interface ValidatorInterface
 {
-    /**
-     * @param array $data
-     * @return ValidatorInterface
-     */
     public function with(array $data = []) : ValidatorInterface;
-
-    /**
-     * @param bool $key
-     * @return array
-     */
-    public function getRules( $key = false ) : array;
-
-    /**
-     * @param string $key
-     * @return bool
-     */
-    public function passes($key = 'create') : bool;
-
-    /**
-     * @param string $key
-     * @return bool
-     */
-    public function fails($key = 'create') : bool;
-
-    /**
-     * @param string $parent
-     * @param bool $key
-     * @param bool $value
-     * @return ValidatorInterface
-     */
-    public function add( $parent = 'create', $key = false, $value = false ) : ValidatorInterface;
-
-    /**
-     * @param array $key
-     * @return ValidatorInterface
-     */
-    public function ignore( array $key = []) : ValidatorInterface;
-
-    /**
-     * @return MessageBag
-     */
+    public function getRules( string $key = null ) : array;
+    public function passes(string $key = 'create') : bool;
+    public function fails(string $key = 'create') : bool;
+    public function add( string $parent, string $key, array|string $value ) : ValidatorInterface;
+    public function ignore(string|array $value) : ValidatorInterface;
     public function errors() : MessageBag;
 
 }
