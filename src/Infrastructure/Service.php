@@ -6,12 +6,16 @@
  * Time: 15:19
  */
 use Atxy2k\Essence\Infrastructure\Validator;
+use Atxy2k\Essence\Interfaces\ServiceInterface;
 use Illuminate\Support\MessageBag;
 
-class Service
+class Service implements ServiceInterface
 {
     protected Validator|null $validator;
-    public function __construct(private MessageBag $errors){}
+    protected MessageBag $errors;
+    public function __construct(){
+        $this->errors = new MessageBag();
+    }
 
     public function errors() : MessageBag
     {
@@ -20,89 +24,22 @@ class Service
         return $this->errors;
     }
 
-    /**
-     * Return rules of validator in key position.
-     * @param string|null $key
-     * @return array
-     */
-    public function rules(string $key = null) : array
-    {
-        return $this->validator->getRules($key);
-    }
-
-    /**
-     * Add a MessageBag object to errors for some reason
-     * @param MessageBag $errors
-     * @return Service
-     */
-    public function pushErrors(MessageBag $errors) : Service
+    public function pushErrors(MessageBag $errors) : ServiceInterface
     {
         $this->errors->merge($errors);
         return $this;
     }
 
-    /**
-     * Add a MessageBag object to errors for some reason.
-     * @param MessageBag $errors
-     * @return Service
-     */
-    public function putErrors(MessageBag $errors) : Service
-    {
-        $this->errors->merge($errors);
-        return $this;
-    }
-
-    /**
-     * Add a message to errors with key called "error" by default.
-     * @param string $message
-     * @param string $key
-     * @return Service
-     */
-    public function pushError(string $message, string $key = 'error') : Service
+    public function pushError(string $message, string $key = 'error') : ServiceInterface
     {
         $this->errors->add($key, $message);
         return $this;
     }
 
-    /**
-     * Add a message to errors with key called "error" by default.
-     * @param string $message
-     * @param string $key
-     * @return Service
-     */
-    public function putError(string $message, string $key = 'error') : Service
-    {
-        $this->errors->add($key, $message);
-        return $this;
-    }
-
-    /**
-     * Clean all errors
-     * @return Service
-     */
-    public function clearErrors() : Service
+    public function cleanErrors() : ServiceInterface
     {
         $this->errors = new MessageBag();
         return $this;
-    }
-
-    /**
-     * Clean all errors
-     * @return Service
-     */
-    public function cleanErrors() : Service
-    {
-        $this->errors = new MessageBag();
-        return $this;
-    }
-
-    /**
-     * Return a number of generated errors.
-     * @return int
-     */
-    public function countErrors() : int
-    {
-        return $this->errors()->count();
     }
 
 }
