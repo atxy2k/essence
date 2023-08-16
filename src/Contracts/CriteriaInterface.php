@@ -1,4 +1,4 @@
-<?php namespace Atxy2k\Essence\Interfaces;
+<?php namespace Atxy2k\Essence\Contracts;
 /**
  * Created by PhpStorm.
  * User: atxy2k

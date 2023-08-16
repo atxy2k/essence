@@ -1,6 +1,6 @@
 <?php namespace Atxy2k\Essence\Infrastructure;
 
-use Atxy2k\Essence\Interfaces\RepositoryInterface;
+use Atxy2k\Essence\Contracts\RepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 

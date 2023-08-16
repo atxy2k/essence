@@ -6,7 +6,7 @@
  * Time: 15:19
  */
 use Atxy2k\Essence\Infrastructure\Validator;
-use Atxy2k\Essence\Interfaces\ServiceInterface;
+use Atxy2k\Essence\Contracts\ServiceInterface;
 use Illuminate\Support\MessageBag;
 
 class Service implements ServiceInterface

@@ -5,7 +5,7 @@
  * Date: 11/2/2019
  * Time: 12:19
  */
-use Atxy2k\Essence\Interfaces\ValidatorInterface;
+use Atxy2k\Essence\Contracts\ValidatorInterface;
 use Atxy2k\Essence\Throwables\RuleNotFoundException;
 use Atxy2k\Essence\Throwables\ValueCannotBeEmptyException;
 use Illuminate\Support\Arr;

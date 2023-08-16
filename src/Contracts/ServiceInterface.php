@@ -1,6 +1,6 @@
 <?php
 
-namespace Atxy2k\Essence\Interfaces;
+namespace Atxy2k\Essence\Contracts;
 
 use Illuminate\Support\MessageBag;
 
