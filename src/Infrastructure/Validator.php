@@ -27,14 +27,14 @@ class Validator implements ValidatorInterface
     }
     public function getRules(string|null $key = null): array
     {
-        throw_unless(!is_null($key) && !empty($this->rules[$key]), RuleNotFoundException::class);
+        throw_if(is_null($key) || !Arr::has($this->rules, $key), RuleNotFoundException::class);
         if(!is_null($key)) return $this->rules[$key];
         return $this->rules;
     }
 
     public function passes(string $key = 'create'): bool
     {
-        throw_unless(!empty(Arr::has($this->getRules(), $key)), RuleNotFoundException::class);
+        throw_if(Arr::has($this->getRules($key), $key) && !empty(Arr::get($this->getRules($key),$key)), RuleNotFoundException::class);
         $aux = $this->rules[$key];
         foreach ( $this->ignore as $ignore )
         {
