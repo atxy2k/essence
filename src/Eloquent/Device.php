@@ -40,9 +40,9 @@ class Device extends Model
         'open_database' => 'boolean',
         'cpu_class' => 'boolean',
         'enabled'   => 'boolean',
-        'type'      => 'integer'
+        'type'      => 'integer',
+        'last_connection' => 'datetime',
     ];
-    protected $dates = ['last_connection'];
 
     public static function boot()
     {

@@ -23,9 +23,9 @@ class User extends Authenticable
         'activated_at', 'created_at', 'updated_at'];
     protected $guarded  = [ 'id' ];
     protected $appends  = [ 'full_name', 'is_admin' ];
-    protected $dates    = ['activated_at'];
     protected $casts = [
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'activated_at' => 'datetime',
     ];
 
     public function setEmailAttribute(string $email)

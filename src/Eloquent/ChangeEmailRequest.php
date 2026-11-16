@@ -15,8 +15,6 @@ class ChangeEmailRequest extends Model
     protected $table = 'change_email_requests';
     protected $fillable = ['user_id', 'token_confirmation_change', 'token_confirmation_email', 'before_email', 'next_email', 'confirmated', 'email_confirmed' ];
     protected $guarded = ['id'];
-    protected $dates = ['created_at', 'updated_at'];
-
     public function user()
     {
         return $this->belongsTo(User::class);
