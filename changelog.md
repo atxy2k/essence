@@ -2,6 +2,12 @@
 
 All notable changes to `Essence` will be documented in this file.
 
+## Version 4.0.1
+
+- Adding support for Laravel 9, 10, 11 and 12 (`illuminate/support ~7|~8|^9|^10|^11|^12`).
+- Dev: allowing `orchestra/testbench` up to ^10 and `phpunit/phpunit` up to ^11.
+- Dev: removing unused `sempro/phpunit-pretty-print` (incompatible with PHPUnit 10+).
+
 ## Version 3.0.0
 
 - Library was rewrote using [laravel auth](https://laravel.com/docs/7.x/authentication)
