@@ -2,6 +2,11 @@
 
 All notable changes to `Essence` will be documented in this file.
 
+## Version 4.0.2
+
+- Laravel 10+ compatibility: replacing the removed `Model::$dates` with `datetime` casts in `User`, `Device`, `DeviceLocationHistory` and `ChangeEmailRequest`.
+- Adding `DateFormat::ISO_*` formats for `Carbon::isoFormat()`, equivalent to the `LOCALIZED_*` ones, which are now deprecated (`strftime`/`formatLocalized()` are removed in Carbon 3).
+
 ## Version 4.0.1
 
 - Adding support for Laravel 9, 10, 11 and 12 (`illuminate/support ~7|~8|^9|^10|^11|^12`).
