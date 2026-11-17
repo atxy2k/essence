@@ -78,7 +78,7 @@ class ChangeEmailRequestService extends Service
                 $request = $this->requestRepository->findByEmail( $data['email'] );
                 throw_if(is_null($request), RequestNotFoundException::class);
                 $now = Carbon::now();
-                if ( $now->diffInMinutes( $request->created_at ) <=60 )
+                if ( $now->diffInMinutes( $request->created_at, true ) <=60 )
                 {
                     throw_unless($request->token_confirmation_email == $data['token_confirmation_email'], InvalidTokenException::class);
                     throw_unless($request->email_confirmed == 0, RequestConfirmedException::class);
@@ -124,7 +124,7 @@ class ChangeEmailRequestService extends Service
                 $request = $this->requestRepository->findByEmail( $data['email'] );
                 throw_if(is_null($request), RequestNotFoundException::class);
                 $now = Carbon::now();
-                if ( $now->diffInMinutes( $request->created_at ) <=60 )
+                if ( $now->diffInMinutes( $request->created_at, true ) <=60 )
                 {
                     throw_unless($request->token_confirmation_change == $data['token_confirmation_change'], InvalidTokenException::class);
                     throw_unless($request->confirmated == 0, RequestConfirmedException::class);

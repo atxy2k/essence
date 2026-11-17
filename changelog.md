@@ -2,6 +2,11 @@
 
 All notable changes to `Essence` will be documented in this file.
 
+## Version 4.0.3
+
+- Security fix for Carbon 3 (Laravel 11+): `diffInMinutes()` now returns a signed value, so password recovery tokens and change-email requests never expired. Expiration checks now use the absolute difference.
+- Adding regression tests for token expiration.
+
 ## Version 4.0.2
 
 - Laravel 10+ compatibility: replacing the removed `Model::$dates` with `datetime` casts in `User`, `Device`, `DeviceLocationHistory` and `ChangeEmailRequest`.

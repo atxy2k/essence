@@ -611,7 +611,7 @@ class UsersService extends Service implements UsersServiceInterface
             /** @var Carbon $now */
             $now = now();
             $timeout = (int) config('essence.password_recovery_timeout', 30);
-            throw_if( $now->diffInMinutes($date) > $timeout,
+            throw_if( $now->diffInMinutes($date, true) > $timeout,
                 TokenExpiredException::class );
             $return = true;
         }
