@@ -88,7 +88,7 @@ class Mobile implements MobileInterface
         return $this->device;
     }
 
-    function setUser(User $user = null): MobileInterface
+    function setUser(?User $user = null): MobileInterface
     {
         if(is_null($user))
         {

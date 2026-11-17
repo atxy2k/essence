@@ -60,7 +60,7 @@ class RolesService extends Service implements RolesServiceInterface
      * @param int|null $except
      * @return bool
      */
-    public function checkNameAvailability( string $name, int $except = null ) : bool
+    public function checkNameAvailability( string $name, ?int $except = null ) : bool
     {
         $return = true;
         try

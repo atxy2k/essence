@@ -45,7 +45,7 @@ class JwtToken implements Arrayable
      * @param Carbon|null $expiration
      * @return JwtToken
      */
-    public static function create(array $payload = [], Carbon $expiration = null) : JwtToken
+    public static function create(array $payload = [], ?Carbon $expiration = null) : JwtToken
     {
         $item = new self();
         $item->setPayload($payload);
@@ -97,7 +97,7 @@ class JwtToken implements Arrayable
      * Set expiration date time
      * @param Carbon|null $carbon
      */
-    public function setExpiration(Carbon $carbon = null) : void
+    public function setExpiration(?Carbon $carbon = null) : void
     {
         $this->expiration = $carbon;
     }

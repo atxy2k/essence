@@ -11,7 +11,7 @@ class ConfigurationsRepository extends Repository
 {
     protected $model = Configuration::class;
 
-    public function findByKey(string $key, object $configurable = null) : ?Configuration
+    public function findByKey(string $key, ?object $configurable = null) : ?Configuration
     {
         if(!is_null($configurable))
         {
@@ -28,7 +28,7 @@ class ConfigurationsRepository extends Repository
             ->first();
     }
 
-    public function countByKey(string $key, object $configurable = null) : int
+    public function countByKey(string $key, ?object $configurable = null) : int
     {
         if(!is_null($configurable))
         {
