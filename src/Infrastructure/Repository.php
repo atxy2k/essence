@@ -97,7 +97,7 @@ class Repository implements RepositoryInterface
         return $this->query->min($column);
     }
 
-    public function pluck(string $col, string $key = null): array
+    public function pluck(string $col, ?string $key = null): array
     {
         return $this->query->pluck($col,$key)->all();
     }
