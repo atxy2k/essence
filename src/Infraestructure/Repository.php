@@ -156,7 +156,7 @@ class Repository implements RepositoryInterface, CriteriaInterface
      * @param string|null $key
      * @return array
      */
-    public function lists(string $col, string $key = null): array
+    public function lists(string $col, ?string $key = null): array
     {
         return $this->query->pluck($col,$key)->all();
     }
@@ -166,7 +166,7 @@ class Repository implements RepositoryInterface, CriteriaInterface
      * @param string|null $key
      * @return array
      */
-    public function pluck(string $col, string $key = null): array
+    public function pluck(string $col, ?string $key = null): array
     {
         return $this->lists($col, $key);
     }

@@ -33,7 +33,7 @@ interface UsersServiceInterface
      * @param int|null $except_id
      * @return bool
      */
-    function checkEmailAvailability(string $email, int $except_id = null) : bool;
+    function checkEmailAvailability(string $email, ?int $except_id = null) : bool;
 
     /**
      * Request password recovery token

@@ -19,7 +19,7 @@ class Essence
         return $this->configurationsService->getConfiguration($key, $configurable) ?? $default;
     }
 
-    public function setOption(string $key, $value, $encode = false, User $user = null)
+    public function setOption(string $key, $value, $encode = false, ?User $user = null)
     {
         return $this->configurationsService->setConfiguration($key, $value, $encode, $user);
     }

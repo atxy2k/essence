@@ -11,7 +11,7 @@ interface RolesServiceInterface
 {
     function create(array $data) : ?Role;
     function update(int $id, array $data) : bool;
-    function checkNameAvailability( string $name, int $except = null ) : bool;
+    function checkNameAvailability( string $name, ?int $except = null ) : bool;
     function delete(int $id) : bool;
     function addClaim(int $role_id,array $claims) : bool ;
     function removeClaim(int $role_id,array $claims) : bool ;

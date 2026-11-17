@@ -97,14 +97,14 @@ interface RepositoryInterface
      * @param string|null $key
      * @return array
      */
-    public function lists(string $col, string $key = null) : array ;
+    public function lists(string $col, ?string $key = null) : array ;
 
     /**
      * @param string $col
      * @param string|null $key
      * @return array
      */
-    public function pluck(string $col, string $key = null) : array ;
+    public function pluck(string $col, ?string $key = null) : array ;
 
     /**
      * @param int $per_page

@@ -233,7 +233,7 @@ class UsersService extends Service implements UsersServiceInterface
         return $completed;
     }
 
-    function checkEmailAvailability(string $email, int $except_id = null): bool
+    function checkEmailAvailability(string $email, ?int $except_id = null): bool
     {
         return $this->usersRepository->findByEmail($email, $except_id) == null;
     }

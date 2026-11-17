@@ -105,7 +105,7 @@ class ClaimsService extends Service implements ClaimsServiceInterface
         return $return;
     }
 
-    function isIdentifierAvailability(string $name, int $except_id = null): bool
+    function isIdentifierAvailability(string $name, ?int $except_id = null): bool
     {
         return $this->repository->identifierIsAvailable($name, $except_id);
     }

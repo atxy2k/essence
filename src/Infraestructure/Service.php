@@ -44,7 +44,7 @@ class Service
      * @param string|null $key
      * @return array
      */
-    public function rules(string $key = null) : array
+    public function rules(?string $key = null) : array
     {
         return $this->validator->getRules($key);
     }

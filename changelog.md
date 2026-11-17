@@ -2,6 +2,10 @@
 
 All notable changes to `Essence` will be documented in this file.
 
+## Version 4.0.4
+
+- PHP 8.4 compatibility: declaring optional parameters with a `null` default as explicitly nullable (`?Type $param = null`), which removes the "Implicitly marking parameter as nullable" deprecations. Signatures are unchanged.
+
 ## Version 4.0.3
 
 - Security fix for Carbon 3 (Laravel 11+): `diffInMinutes()` now returns a signed value, so password recovery tokens and change-email requests never expired. Expiration checks now use the absolute difference.
